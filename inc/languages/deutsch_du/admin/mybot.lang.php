@@ -22,6 +22,7 @@ $l['mybot_user'] = "Benutzer";
 $l['mybot_user_desc'] = "Welcher Benutzer soll als Bot fungieren?";
 $l['mybot_user_not'] = "Interner Fehler [1]";
 $l['mybot_username'] = "Benutzername";
+
 $l['mybot_username_desc'] = "Wie soll der neue Benutzer heißen?";
 $l['mybot_username_not'] = "Kein Benutzername angegeben";
 $l['mybot_pw'] = "Passwort";
