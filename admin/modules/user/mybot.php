@@ -10,6 +10,7 @@ $lang->load("mybot");
 $page->add_breadcrumb_item($lang->mybot, "index.php?module=user-mybot");
 $page->output_header($lang->mybot);
 
+<<<<<<< HEAD
 if($mybb->input['action']=="add")
 	generate_tabs("add");
 elseif($mybb->input['action']=="post")
@@ -18,6 +19,9 @@ elseif($mybb->input['action']=="update")
 	generate_tabs("update");
 else
 	generate_tabs("overview");
+=======
+generate_tabs("overview");
+>>>>>>> b9f02163aac0b8eb365a5fb9ae8c0dd7755caefb
 echo "Test";
 
 $page->output_footer();
