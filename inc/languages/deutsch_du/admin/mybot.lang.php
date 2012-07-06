@@ -9,8 +9,31 @@ $l['mybot_addrule'] = "Neue Regel hinzufügen";
 $l['mybot_addrule_desc'] = "Hier kannst du eine neue Regel hinzufügen";
 $l['mybot_post'] = "Als Bot posten";
 $l['mybot_post_desc'] = "Hier kannst du als Bot posten";
-$l['mybot_update'] = "Update";
-$l['mybot_update_desc'] = "Hier kannst du MyBot updaten";
+$l['mybot_documentation'] = "Dokumentation";
+$l['mybot_documentation_desc'] = "Hier siehst du alle Variablen die du in unterschiedlichen Texten einsetzen kannst";
+
+/* Documentation */
+$l['mybot_variable'] = "Variable";
+$l['mybot_description'] = "Beschreibung";
+$l['mybot_global'] = "Globale Variablen";
+$l['mybot_boardname'] = "Der Name deines Forums";
+$l['mybot_botname'] = "Der Name deines Bots";
+$l['mybot_register'] = "Variablen für Registrierung";
+$l['mybot_registered'] = "Der Name des Neuregistrierten";
+
+/* Post as Bot */
+$l['mybot_post_forum'] = "Forum";
+$l['mybot_post_forum_desc'] = "In welchem Forum soll gepostet werden?";
+$l['mybot_post_forum_not'] = "Interner Fehler [1]";
+$l['mybot_post_subject'] = "Titel";
+$l['mybot_post_subject_desc'] = "Der Titel des Threads";
+$l['mybot_post_subject_not'] = "Kein Titel angegeben";
+$l['mybot_post_text'] = "Text";
+$l['mybot_post_text_desc'] = "Der Beitrag der gepostet werden soll. MyCode und Smileys aktiviert.<br />Achtung: MyBot Variablen sind hier nicht verfügbar";
+$l['mybot_post_text_not'] = "Kein Text angegeben";
+$l['mybot_post_submit'] = "Post absenden";
+$l['mybot_post_category'] = "Dein gewähltes Forum ist eine Kategorie in welcher nicht gepostet werden kann.";
+$l['mybot_post_inserted'] = "Thema gespeichert";
 
 
 /* Install Process */

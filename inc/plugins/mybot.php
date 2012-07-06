@@ -13,6 +13,7 @@ $plugins->add_hook("admin_config_plugins_activate_commit", "mybot_installed");
 $plugins->add_hook("admin_user_menu", "mybot_admin_user_menu");
 $plugins->add_hook("admin_user_action_handler", "mybot_admin_user_action_handler");
 $plugins->add_hook("admin_user_permissions", "mybot_admin_user_permissions");
+$plugins->add_hook("member_do_register_end", "mybot_register");
 
 function mybot_info()
 {
@@ -66,9 +67,15 @@ pm=Write a PM
 post=Write a Post",
 		        "value" => "none",
 	          ),
+	      	"react_pm_subject" => array(
+	          	"title" => "Subject of the PM",
+	          	"description" => "Just needed when the bot sends a PM to a new User<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+		        "optionscode" => "text",
+		        "value" => "Welcome {registered}",
+	          ),
 	      	"react_pm" => array(
 	          	"title" => "What stands in the PM?",
-	          	"description" => "Just needed when the bot sends a PM to a new User",
+	          	"description" => "Just needed when the bot sends a PM to a new User<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
 		        "optionscode" => "textarea",
 		        "value" => "Hi {registered},
 
@@ -83,9 +90,15 @@ Best regards,
 		        "optionscode" => "text",
 		        "value" => "0",
 	          ),
+	      	"react_post_subject" => array(
+	          	"title" => "Subject of the Post",
+	          	"description" => "Just needed when the bot posts in a forum when a new User registers<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+		        "optionscode" => "text",
+		        "value" => "Welcome {registered}",
+	          ),
 	      	"react_post_text" => array(
 	          	"title" => "What stands in the post?",
-	          	"description" => "Just needed when the bot posts in a forum when a new User registers",
+	          	"description" => "Just needed when the bot posts in a forum when a new User registers<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
 		        "optionscode" => "textarea",
 		        "value" => "Hi {registered},
 
@@ -164,6 +177,80 @@ function mybot_admin_user_permissions($admin_permissions)
 	$admin_permissions['mybot'] = $lang->mybot_permission;
 
 	return $admin_permissions;
+}
+
+function mybot_parser($text, $type="", $additional=array()) {
+	global $mybb;
+	if(!isset($additional['botname']))
+   		$additional['botname'] = $db->fetch_field($db->simple_select("users", "username", "uid='{$mybb->settings['mybot_user']}'"), "username");
+	$text = str_replace('{boardname}', $mybb->settings['bbname'], $text);
+	$text = str_replace('{botname}', $additional['botname'], $text);
+	if($type=="register") {
+		if(isset($additional['registered']))		    
+			$text = str_replace('{registered}', $additional['registered'], $text);
+	}
+	return $text;
+}
+
+function mybot_register()
+{
+	global $mybb, $user_info, $db;
+	$additional['registered'] = $user_info['username'];
+	$additional['botname'] = $db->fetch_field($db->simple_select("users", "username", "uid='{$mybb->settings['mybot_user']}'"), "username");
+	if($mybb->settings['mybot_react']=="pm") {
+		$message = mybot_parser($mybb->settings['mybot_react_pm'], "register", $additional);
+		$subject = mybot_parser($mybb->settings['mybot_react_pm_subject'], "register", $additional);
+		//Write PM
+		require_once MYBB_ROOT."inc/datahandlers/pm.php";
+		$pmhandler = new PMDataHandler();
+	
+		$pm = array(
+			"subject" => $subject,
+			"message" => $message,
+			"icon" => "",
+			"fromid" => $mybb->settings['mybot_user'],
+			"do" => "",
+			"pmid" => "",
+		);
+		$pm['to'] = explode(",", $user_info['username']);
+		$pm['to'] = array_map("trim", $pm['to']);
+		$pmhandler->set_data($pm);
+	
+		// Now let the pm handler do all the hard work.
+		if($pmhandler->validate_pm())
+		{
+			$pminfo = $pmhandler->insert_pm();
+		}else {
+			$pm_errors = $pmhandler->get_friendly_errors();
+			$send_errors = inline_error($pm_errors);
+			echo $send_errors;
+		}
+	} elseif($mybb->settings['mybot_react']=="post") {
+		//Write Post
+		$message = mybot_parser($mybb->settings['mybot_react_post_text'], "register", $additional);
+		$subject = mybot_parser($mybb->settings['mybot_react_post_subject'], "register", $additional);
+        require_once  MYBB_ROOT."inc/datahandlers/post.php";
+        $posthandler = new PostDataHandler("insert");
+        $posthandler->action = "thread";
+
+        // Set the thread data that came from the input to the $thread array.
+        $new_thread = array(
+        	"fid" => $mybb->settings['mybot_react_post_forum'],
+            "subject" => $subject,
+            "prefix" => "",
+            "icon" => "",
+            "uid" => $mybb->settings['mybot_user'],
+            "username" => $additional['botname'],
+            "message" => $message,
+            "ipaddress" => get_ip()
+        );
+        $posthandler->set_data($new_thread);
+        $valid_thread = $posthandler->validate_thread();
+		if($valid_thread) {
+	        $posthandler->insert_thread();
+		}
+	} else
+		return;
 }
 
 function mybot_activate()
