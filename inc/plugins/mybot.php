@@ -31,7 +31,7 @@ function mybot_info()
 
 function mybot_install()
 {
-	global $lang, $PL;
+	global $lang, $PL, $db;
 	mybot_uninstall();
 	$plugininfo = mybot_info();
 	$lang->load("mybot");
@@ -44,68 +44,68 @@ function mybot_install()
 
     if($PL->version < 8)
     {
-//        flash_message($lang->mybot_pl_old, "error");
-        flash_message($PL->version, "error");
+        flash_message($lang->mybot_pl_old, "error");
+//        flash_message($PL->version, "error");
         admin_redirect("index.php?module=config-plugins");
     }
-    global $PL;
+	$db->query("CREATE TABLE `".TABLE_PREFIX."mybot` ( `id` int(11) NOT NULL AUTO_INCREMENT, `title` varchar(50) DEFAULT NULL, `conditions` text NOT NULL, `actions` text NOT NULL, PRIMARY KEY (`id`) ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1");
 	$PL->settings("mybot",
 	  	"MyBot",
 	  	"Settings for the \"MyBot\" Plugin",
 	  	array(
 	      	"user" => array(
 	          	"title" => "Bot",
-	          	"description" => "The User which acts as the bot. Please insert the User ID of this bot",
+	          	"description" => "Please insert the UID of the user who should be the bot",
 		        "optionscode" => "text",
 		        "value" => "0",
 	          ),
 	      	"react" => array(
-	          	"title" => "Reaction on a new User?",
+	          	"title" => "What should the bot do when a new user registers?",
 		        "optionscode" => "select
 none=Nothing
-pm=Write a PM
-post=Write a Post",
+pm=Send a PM
+post=Create a thread",
 		        "value" => "none",
 	          ),
 	      	"react_pm_subject" => array(
-	          	"title" => "Subject of the PM",
+	          	"title" => "Subject (PM)",
 	          	"description" => "Just needed when the bot sends a PM to a new User<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
 		        "optionscode" => "text",
 		        "value" => "Welcome {registered}",
 	          ),
 	      	"react_pm" => array(
-	          	"title" => "What stands in the PM?",
+	          	"title" => "Message (PM)",
 	          	"description" => "Just needed when the bot sends a PM to a new User<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
 		        "optionscode" => "textarea",
 		        "value" => "Hi {registered},
 
-welcome here on {boardname}. We hope you have fun here.
+welcome on {boardname}
 
 Best regards,
-{boardname} Team",
+{botname}",
 	          ),
 	      	"react_post_forum" => array(
-	          	"title" => "Forum to post in",
-	          	"description" => "In which forum should the bot post?",
+	          	"title" => "Welcom forum",
+	          	"description" => "Which forum should be used by the bot to post in?",
 		        "optionscode" => "text",
 		        "value" => "0",
 	          ),
 	      	"react_post_subject" => array(
-	          	"title" => "Subject of the Post",
+	          	"title" => "Subject (Thread)",
 	          	"description" => "Just needed when the bot posts in a forum when a new User registers<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
 		        "optionscode" => "text",
 		        "value" => "Welcome {registered}",
 	          ),
 	      	"react_post_text" => array(
-	          	"title" => "What stands in the post?",
+	          	"title" => "Message (Thread)",
 	          	"description" => "Just needed when the bot posts in a forum when a new User registers<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
 		        "optionscode" => "textarea",
 		        "value" => "Hi {registered},
 
-welcome here on {boardname}. We hope you have fun here. If you have questions you can ask them here.
+welcome on {boardname}
 
 Best regards,
-{boardname} Team",
+{botname}",
 	          ),
 		)
     );
@@ -122,16 +122,16 @@ function mybot_installed()
 
 function mybot_is_installed()
 {
-	global $PL;
-	$PL or require_once PLUGINLIBRARY;
-	if($PL->cache_read("mybot_version")!="")
-	    return true;
-	return false;
+	global $db;
+	return $db->table_exists("mybot");
 }
 
 function mybot_uninstall()
 {
-	global $PL;
+	global $PL, $db;
+    $PL or require_once PLUGINLIBRARY;
+	$db->drop_table("mybot");
+    $PL->settings_delete("mybot");
 	$PL->cache_delete("mybot_version");
 }
 
@@ -251,6 +251,42 @@ function mybot_register()
 		}
 	} else
 		return;
+}
+
+function mybot_cache_update($load = true, $rules = array())
+{
+	global $PL, $db;
+	if($load) {
+	    $query = $db->simple_select("mybot");
+		while($rule = $db->fetch_array($query))
+		    $rules[] = $rule;
+	}
+	
+	for($i=0; $i<sizeof($rules); $i++) {
+		if(!is_Array($rules[$i]['conditions']))
+		    $rules[$i]['conditions'] = @unserialize($rules[$i]['conditions']);
+		if(!is_Array($rules[$i]['actions']))
+		    $rules[$i]['actions'] = @unserialize($rules[$i]['actions']);
+	}
+	return $PL->cache_update("mybot_rules", $rules);
+}
+
+function mybot_cache_load($id = false)
+{
+	global $PL;
+	
+	$content = $PL->cache_read("mybot_rules");
+	if(!is_array($content))
+	    $content = mybot_cache_update();
+	if(!$id)
+		return $content;
+	foreach($content as $rid => $rule) {
+		if($rule['id']==$id)
+		    $rrid[] = $rid;
+	}
+	if(sizeOf($rrid)!=1)
+	    return false;
+	return $content[$rrid[0]];
 }
 
 function mybot_activate()
