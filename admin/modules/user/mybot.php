@@ -250,6 +250,11 @@ if($mybb->input['action']=="add") {
 
 			if(in_Array("move", $mybb->input['actions']) && !strlen(trim($mybb->input['move'])))
 				$errors[] = $lang->mybot_add_move_not;
+			elseif(in_Array("move", $mybb->input['actions'])) {
+				$forum = get_forum($mybb->input['move']);
+				if(!$forum || $forum['type'] != "f" || $forum['type'] == "f" && $forum['linkto'] != '')
+				    $errors[] = $lang->mybot_add_move_invalid;
+			}
 
 			if(in_Array("delete", $mybb->input['actions']) && !strlen(trim($mybb->input['delete'])))
 				$errors[] = $lang->mybot_add_delete_not;
@@ -342,12 +347,11 @@ if($mybb->input['action']=="add") {
 		if(array_key_exists("move", $rule['actions']))
 			$actions[] = "move";
 
+		$thread_checked = true;
+		$post_checked = false;
 		if(array_key_exists("delete", $rule['actions'])) {
 			$actions[] = "delete";
-			if($rule['actions']['delete'] == "thread") {
-				$thread_checked = true;
-				$post_checked = false;
-			} else {
+			if($rule['actions']['delete'] == "post") {
 				$thread_checked = false;
 				$post_checked = true;				
 			}
@@ -358,7 +362,7 @@ if($mybb->input['action']=="add") {
 
 		if(array_key_exists("pm", $rule['actions'])) {
 			$actions[] = "pm";
-			$pm = $rule['pm_user'];
+			$pm = $rule['actions']['pm']['user'];
 		    if($pm != "last" && $pm != "start")
 		        $pm = "other";
 		}
@@ -609,10 +613,6 @@ if($mybb->input['action']=="add") {
 
 	$table->construct_cell("{lastpost->subject}");
 	$table->construct_cell($lang->mybot_doc_subject);
-	$table->construct_row();
-
-	$table->construct_cell("{lastpost->number}");
-	$table->construct_cell($lang->mybot_doc_number);
 	$table->construct_row();
 
 	$table->construct_cell("{lastpost->id}");
