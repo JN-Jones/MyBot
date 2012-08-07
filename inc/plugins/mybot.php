@@ -25,7 +25,7 @@ function mybot_info()
 		"website"		=> "",
 		"author"		=> "Jones",
 		"authorsite"	=> "http://mybbdemo.tk",
-		"version"		=> "0.1",
+		"version"		=> "1.0 Beta 1",
 		"guid" 			=> "",
 		"compatibility" => "16*"
 	);
@@ -336,8 +336,7 @@ function mybot_register()
 			"do" => "",
 			"pmid" => "",
 		);
-		$pm['to'] = explode(",", $user_info['username']);
-		$pm['to'] = array_map("trim", $pm['to']);
+		$pm['toid'][] = $user_info['uid'];
 		$pmhandler->set_data($pm);
 
 		// Now let the pm handler do all the hard work.
@@ -521,16 +520,23 @@ function mybot_work($info, $type)
 			else
 				$moderation->stick_threads($info['tid']);
 		}
+		
+    	if(array_key_exists("close", $rule['actions'])) {
+			$thread = get_thread($info['tid']);
+			if($thread['closed'] == 1)
+				$moderation->open_threads($info['tid']);
+			else
+				$moderation->close_threads($info['tid']);
+		}
 
 		if(array_key_exists("pm", $rule['actions'])) {
 		    if($rule['actions']['pm']['user'] == "last")
-				$rule['actions']['pm']['user'] = $info['username'];
+				$rule['actions']['pm']['user'] = $info['uid'];
 			elseif($rule['actions']['pm']['user'] == "start") {
 				$thread = get_thread($info['tid']);
 				$post = get_post($thread['firstpost']);
-				$rule['actions']['pm']['user'] = $post['username'];
-		    } else
-		   		$rule['actions']['pm']['user'] = $db->fetch_field($db->simple_select("users", "username", "uid='{$rule['actions']['pm']['user']}'"), "username");		
+				$rule['actions']['pm']['user'] = $post['uid'];
+			}
 		    
 			$pm = array(
 				"subject" => $rule['actions']['pm']['subject'],
@@ -540,7 +546,7 @@ function mybot_work($info, $type)
 				"do" => "",
 				"pmid" => "",
 			);
-			$pm['to'][] = $rule['actions']['pm']['user'];
+			$pm['toid'][] = $rule['actions']['pm']['user'];
 			$pmhandler->set_data($pm);
 	
 			// Now let the pm handler do all the hard work.

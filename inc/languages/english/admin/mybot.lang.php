@@ -1,6 +1,6 @@
 <?php
 $l['mybot'] = "MyBot";
-$l['mybot_permission'] = "Can MyBot configure?";
+$l['mybot_permission'] = "Can configure MyBot?";
 
 
 /* Admin Modul */
@@ -11,15 +11,51 @@ $l['mybot_post'] = "Post as bot";
 $l['mybot_post_desc'] = "Here you can post as bot";
 $l['mybot_documentation'] = "Documentation";
 $l['mybot_documentation_desc'] = "Here you can see all variables, which you can use in various texts";
+$l['mybot_cache_reload'] = "Reload Cache";
+$l['mybot_no_id'] = "No id given";
+$l['mybot_no_rules'] = "No rules available";
+
+/* Auflistung */
+$l['mybot_title'] = "Title";
+$l['mybot_conditions'] = "Condition";
+$l['mybot_conditions_user'] = "User";
+$l['mybot_conditions_group'] = "Usergroup";
+$l['mybot_conditions_forum'] = "Forum";
+$l['mybot_conditions_string'] = "String";
+$l['mybot_actions'] = "Actions";
+$l['mybot_actions_answer'] = "Answer";
+$l['mybot_actions_move'] = "Move";
+$l['mybot_actions_delete'] = "Delete";
+$l['mybot_actions_stick'] = "Stick";
+$l['mybot_actions_close'] = "Open/Close";
+$l['mybot_actions_pm'] = "Write PM";
+
+/* Cache Update */
+$l['mybot_cache_reloaded'] = "Reloaded Cache";
 
 /* Documentation */
 $l['mybot_variable'] = "Variable";
 $l['mybot_description'] = "Description";
 $l['mybot_global'] = "Global variables";
-$l['mybot_boardname'] = "The name of your Board";
-$l['mybot_botname'] = "The name of your bot";
+$l['mybot_doc_boardname'] = "The name of your Board";
+$l['mybot_doc_botname'] = "The name of your bot";
 $l['mybot_register'] = "Variables for registration";
-$l['mybot_registered'] = "The name of the new registered";
+$l['mybot_doc_registered'] = "The name of the new registered";
+$l['mybot_thread'] = "Variables for threads";
+$l['mybot_doc_user'] = "The name of the poster";
+$l['mybot_doc_userlink'] = "The name of the poster with MyCode Link to his profile";
+$l['mybot_doc_subject'] = "The subject of the post";
+$l['mybot_doc_id'] = "The internal ID of the post";
+$l['mybot_doc_link'] = "MyCode link to the post. The subject is the text which is shown";
+$l['mybot_doc_date'] = "Date of the post";
+$l['mybot_doc_time'] = "Time of the post";
+$l['mybot_doc_message'] = "The complete message of the post";
+$l['mybot_doc_uid'] = "The User ID";
+$l['mybot_doc_timestamp'] = "Timestamp of the post";
+$l['mybot_doc_thread'] = "All variables for the last post are also available for the thread.<br />Example:<br />{lastpost->user} will replaced by the name of the user who have written the last post. {thread->user} will replaced by the name of the user who have written the first post";
+$l['mybot_doc_forum'] = "The forum in which the thread is posted";
+$l['mybot_doc_answers'] = "Number of answers";
+$l['mybot_doc_views'] = "Number of views";
 
 /* Post as Bot */
 $l['mybot_post_forum'] = "Forum";
@@ -35,6 +71,70 @@ $l['mybot_post_submit'] = "Submit post";
 $l['mybot_post_category'] = "Your chosen forum is a category in which can't be posted.";
 $l['mybot_post_inserted'] = "Post saved";
 
+/* Add/Edit/Delete Rule */
+$l['mybot_editrule'] = "Edit rule";
+$l['mybot_add_title'] = "Title of the rule";
+$l['mybot_add_title_desc'] = "Just needed for the listing";
+$l['mybot_add_title_not'] = "Please enter a title";
+$l['mybot_add_conditions'] = "Conditions";
+$l['mybot_add_conditions_desc'] = "When should the rule be executed?";
+$l['mybot_add_conditions_user'] = "If a specific user posts";
+$l['mybot_add_conditions_group'] = "If a user in a specific usergroups posts";
+$l['mybot_add_conditions_forum'] = "Just in specific forums";
+$l['mybot_add_conditions_string'] = "If a specific string is in the message";
+$l['mybot_add_conditions_not'] = "Please select at least one condition";
+$l['mybot_add_action'] = "Actions";
+$l['mybot_add_action_desc'] = "What should the bot do?";
+$l['mybot_add_action_answer'] = "Answer";
+$l['mybot_add_action_move'] = "Move thread";
+$l['mybot_add_action_delete'] = "Delete post/thread";
+$l['mybot_add_action_stick'] = "Stick/Unstick thread";
+$l['mybot_add_action_close'] = "Open/Close thread";
+$l['mybot_add_action_pm'] = "Send PM";
+$l['mybot_add_action_not'] = "Please select at least one action";
+$l['mybot_add_user'] = "User";
+$l['mybot_add_user_desc'] = "On what user should the bot react?";
+$l['mybot_add_user_not'] = "Please select a user";
+$l['mybot_add_group'] = "Usergroup";
+$l['mybot_add_group_desc'] = "On what usergroup should the bot react?";
+$l['mybot_add_group_not'] = "Please select a usergroup";
+$l['mybot_add_forum'] = "Forum";
+$l['mybot_add_forum_desc'] = "In which forum should the bot react?";
+$l['mybot_add_forum_not'] = "Please select a forum";
+$l['mybot_add_string'] = "String";
+$l['mybot_add_string_desc'] = "Which string should appear in the post so the bot reacts?";
+$l['mybot_add_string_not'] = "Please enter a string";
+$l['mybot_add_answer'] = "Answer";
+$l['mybot_add_answer_desc'] = "With what should the bot answer?";
+$l['mybot_add_answer_not'] = "Please enter an answer";
+$l['mybot_add_move'] = "Move";
+$l['mybot_add_move_desc'] = "Where should the thread be moved?";
+$l['mybot_add_move_not'] = "Please select a forum where the thread should be moved";
+$l['mybot_add_move_invalid'] = "You can't move a thread in this forum. Please select another";
+$l['mybot_add_delete'] = "Delete";
+$l['mybot_add_delete_desc'] = "Should the whole thread be deleted or just the last post?";
+$l['mybot_add_delete_not'] = "Internal Error [1]";
+$l['thread'] = "Thread";
+$l['post'] = "Post";
+$l['mybot_add_pm'] = "Private Message";
+$l['mybot_add_pm_desc'] = "To whom should the message be sent?";
+$l['mybot_add_pm_not'] = "Internal Error [2]";
+$l['mybot_add_pm_last'] = "Last poster";
+$l['mybot_add_pm_start'] = "Threadstarter";
+$l['mybot_add_pm_other'] = "Other User";
+$l['mybot_add_pm_user'] = "User";
+$l['mybot_add_pm_user_desc'] = "To which user should the message be sent?";
+$l['mybot_add_pm_user_not'] = "Please select a user";
+$l['mybot_add_subject'] = "Subject";
+$l['mybot_add_subject_desc'] = "Which subject should the message have?";
+$l['mybot_add_subject_not'] = "Please enter a subject";
+$l['mybot_add_message'] = "Message";
+$l['mybot_add_message_desc'] = "What should the bot write?";
+$l['mybot_add_message_not'] = "Please enter a message";
+$l['mybot_add_added'] = "Added rule";
+$l['mybot_add_edited'] = "Edited rule";
+$l['mybot_delete_confirm'] = "Are you sure that you want to delete this rule?";
+$l['mybot_delete_success'] = "Deleted rule";
 
 /* Install Process */
 $l['mybot_installing'] = "Install MyBot";

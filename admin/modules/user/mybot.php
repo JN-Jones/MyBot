@@ -17,24 +17,24 @@ if($mybb->input['action']=="add") {
 	if($mybb->request_method == "post") {
 		if(!strlen(trim($mybb->input['title'])))
 			$errors[] = $lang->mybot_add_title_not;
-			
+
 		if(!$mybb->input['conditions'])
 			$errors[] = $lang->mybot_add_conditions_not;
 
 		if(is_array($mybb->input['conditions'])) {
 			if(in_Array("user", $mybb->input['conditions']) && !$mybb->input['user'])
 				$errors[] = $lang->mybot_add_user_not;
-	
+
 	    	if(in_Array("group", $mybb->input['conditions']) && !$mybb->input['group'])
 				$errors[] = $lang->mybot_add_group_not;
-	
+
 	       	if(in_Array("forum", $mybb->input['conditions']) && !$mybb->input['forum'])
 				$errors[] = $lang->mybot_add_forum_not;
-	
+
 	       	if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string'])))
 				$errors[] = $lang->mybot_add_string_not;
 		}
-		
+
 		if(!$mybb->input['actions'])
 			$errors[] = $lang->mybot_add_action_not;
 
@@ -54,7 +54,7 @@ if($mybb->input['action']=="add") {
 
     			if($mybb->input['pm'] == "other" && !strlen(trim($mybb->input['pm_user'])))
 					$errors[] = $lang->mybot_add_pm_user_not;
-				
+
 				if(!strlen(trim($mybb->input['subject'])))
 					$errors[] = $lang->mybot_add_subject_not;
 
@@ -62,7 +62,7 @@ if($mybb->input['action']=="add") {
 					$errors[] = $lang->mybot_add_message_not;
 			}
 		}
-		
+
 		if(!$errors) {
 			if(in_Array("user", $mybb->input['conditions']))
 			    $conditions['user'] = $mybb->input['user'];
@@ -89,6 +89,9 @@ if($mybb->input['action']=="add") {
 			if(in_Array("stick", $mybb->input['actions']))
 			    $actions['stick'] = true;
 
+			if(in_Array("close", $mybb->input['actions']))
+			    $actions['close'] = true;
+
 			if(in_Array("pm", $mybb->input['actions'])) {
 			    $actions['pm']['user'] = $mybb->input['pm'];
     			if($mybb->input['pm'] == "other")
@@ -96,19 +99,19 @@ if($mybb->input['action']=="add") {
 			    $actions['pm']['subject'] = $mybb->input['subject'];
 			    $actions['pm']['message'] = $mybb->input['message'];
 			}
-			
+
 			$rules = mybot_cache_load();
-	
+
 			$insert_array = array(
 				'title' => $db->escape_string($mybb->input['title']),
 				'conditions' => $db->escape_string(serialize($conditions)),
 				'actions' => $db->escape_string(serialize($actions))
 			);
 			$id = $db->insert_query('mybot', $insert_array);
-			
+
 			$rules[] = array("id"=>$id, "title"=>$mybb->input['title'], "conditions"=>$conditions, "actions"=>$actions);
 			mybot_cache_update(false, $rules);
-			
+
 			flash_message($lang->mybot_add_added, 'success');
 			admin_redirect("index.php?module=user-mybot");
 		}
@@ -121,7 +124,7 @@ if($mybb->input['action']=="add") {
 		$query = $db->simple_select("users", "uid, username");
 		while($user = $db->fetch_array($query))
 		    $userarray[$user['uid']] = $user['username'];
-	
+
 		$form = new Form("index.php?module=user-mybot&amp;action=add", "post");
 		$form_container = new FormContainer($lang->mybot_addrule);
 
@@ -135,7 +138,7 @@ if($mybb->input['action']=="add") {
 				"string" => $lang->mybot_add_conditions_string);
 		$add_conditions = $form->generate_select_box("conditions[]", $conditions_list, $mybb->input['conditions'], array("multiple"=>true, "id"=>"conditions"));
 		$form_container->output_row($lang->mybot_add_conditions." <em>*</em>", $lang->mybot_add_conditions_desc, $add_conditions);
-	
+
 		$add_user = $form->generate_select_box("user[]", $userarray, $mybb->input['user'], array("multiple"=>true));
 		$form_container->output_row($lang->mybot_add_user, $lang->mybot_add_user_desc, $add_user, '', array(), array('id' => 'user'));
 
@@ -153,6 +156,7 @@ if($mybb->input['action']=="add") {
 				"move" => $lang->mybot_add_action_move,
 				"delete" => $lang->mybot_add_action_delete,
 				"stick" => $lang->mybot_add_action_stick,
+				"close" => $lang->mybot_add_action_close,
 				"pm" => $lang->mybot_add_action_pm);
 		$add_actions = $form->generate_select_box("actions[]", $action_list, $mybb->input['actions'], array("multiple"=>true, "id"=>"action"));
 		$form_container->output_row($lang->mybot_add_action." <em>*</em>", $lang->mybot_add_action_desc, $add_actions);
@@ -182,14 +186,14 @@ if($mybb->input['action']=="add") {
 
 		$add_message = $form->generate_text_area("message", $mybb->input['message']);
 		$form_container->output_row($lang->mybot_add_message, $lang->mybot_add_message_desc, $add_message, '', array(), array('id' => 'message'));
-	
+
 		$form_container->end();
 
 		$buttons[] = $form->generate_submit_button($lang->mybot_addrule);
 		$buttons[] = $form->generate_reset_button($lang->reset);
 		$form->output_submit_wrapper($buttons);
 		$form->end();
-		
+
 		echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 		<script type="text/javascript">
 			Event.observe(window, "load", function() {
@@ -300,6 +304,9 @@ if($mybb->input['action']=="add") {
 			if(in_Array("stick", $mybb->input['actions']))
 			    $actions['stick'] = true;
 
+			if(in_Array("close", $mybb->input['actions']))
+			    $actions['close'] = true;
+
 			if(in_Array("pm", $mybb->input['actions'])) {
 			    $actions['pm']['user'] = $mybb->input['pm'];
     			if($mybb->input['pm'] == "other")
@@ -321,7 +328,7 @@ if($mybb->input['action']=="add") {
 //			mybot_cache_update(false, $rules);
 
 			mybot_cache_update();
-			
+
 			flash_message($lang->mybot_add_edited, 'success');
 			admin_redirect("index.php?module=user-mybot");
 		}
@@ -353,12 +360,15 @@ if($mybb->input['action']=="add") {
 			$actions[] = "delete";
 			if($rule['actions']['delete'] == "post") {
 				$thread_checked = false;
-				$post_checked = true;				
+				$post_checked = true;
 			}
 		}
 
     	if(array_key_exists("stick", $rule['actions']))
 			$actions[] = "stick";
+
+    	if(array_key_exists("close", $rule['actions']))
+			$actions[] = "close";
 
 		if(array_key_exists("pm", $rule['actions'])) {
 			$actions[] = "pm";
@@ -366,8 +376,8 @@ if($mybb->input['action']=="add") {
 		    if($pm != "last" && $pm != "start")
 		        $pm = "other";
 		}
-		
-		
+
+
 		if($errors)
 		{
 			$page->output_inline_error($errors);
@@ -394,8 +404,7 @@ if($mybb->input['action']=="add") {
 		$form_container->output_row($lang->mybot_add_user, $lang->mybot_add_user_desc, $add_user, '', array(), array('id' => 'user'));
 
 		$add_group = $form->generate_group_select("group[]", $rule['conditions']['group'], array("multiple"=>true));
-//		$form_container->output_row($lang->mybot_add_group, $lang->mybot_add_group_desc, $add_group, '', array(), array('id' => 'group'));
-		$form_container->output_row($rule['conditions']['group'], $lang->mybot_add_group_desc, $add_group, '', array(), array('id' => 'group'));
+		$form_container->output_row($lang->mybot_add_group, $lang->mybot_add_group_desc, $add_group, '', array(), array('id' => 'group'));
 
 		$add_forum = $form->generate_forum_select("forum[]", $rule['conditions']['forum'], array("multiple"=>true));
 		$form_container->output_row($lang->mybot_add_forum, $lang->mybot_add_forum_desc, $add_forum, '', array(), array('id' => 'forum'));
@@ -408,6 +417,7 @@ if($mybb->input['action']=="add") {
 				"move" => $lang->mybot_add_action_move,
 				"delete" => $lang->mybot_add_action_delete,
 				"stick" => $lang->mybot_add_action_stick,
+				"close" => $lang->mybot_add_action_close,
 				"pm" => $lang->mybot_add_action_pm);
 		$add_actions = $form->generate_select_box("actions[]", $action_list, $actions, array("multiple"=>true, "id"=>"action"));
 		$form_container->output_row($lang->mybot_add_action." <em>*</em>", $lang->mybot_add_action_desc, $add_actions);
@@ -473,9 +483,9 @@ if($mybb->input['action']=="add") {
 	$id = intval($mybb->input['id']);
 	if(!$id) {
 		flash_message($lang->mybot_no_id, 'error');
-		admin_redirect("index.php?module=user-mybot");	
+		admin_redirect("index.php?module=user-mybot");
 	}
-	
+
 	if($mybb->input['no'])
 	{
 		admin_redirect("index.php?module=user-mybot");
@@ -554,18 +564,18 @@ if($mybb->input['action']=="add") {
 		}
 		$form = new Form("index.php?module=user-mybot&amp;action=post", "post");
 		$form_container = new FormContainer($lang->mybot_post);
-	
+
 		$post_forum = $form->generate_forum_select("forum", "");
 		$form_container->output_row($lang->mybot_post_forum." <em>*</em>", $lang->mybot_post_forum_desc, $post_forum);
-	
+
 		$post_subject = $form->generate_text_box("subject");
 		$form_container->output_row($lang->mybot_post_subject." <em>*</em>", $lang->mybot_post_subject_desc, $post_subject);
 
 		$post_text = $form->generate_text_area("text");
 		$form_container->output_row($lang->mybot_post_text." <em>*</em>", $lang->mybot_post_text_desc, $post_text);
-	
+
 		$form_container->end();
-	
+
 		$buttons[] = $form->generate_submit_button($lang->mybot_post_submit);
 		$buttons[] = $form->generate_reset_button($lang->reset);
 		$form->output_submit_wrapper($buttons);
@@ -584,7 +594,7 @@ if($mybb->input['action']=="add") {
 	$table->construct_cell("{botname}");
 	$table->construct_cell($lang->mybot_doc_botname);
 	$table->construct_row();
-	
+
 	$table->output($lang->mybot_global);
 
 
@@ -595,7 +605,7 @@ if($mybb->input['action']=="add") {
 	$table->construct_cell("{registered}");
 	$table->construct_cell($lang->mybot_doc_registered);
 	$table->construct_row();
-	
+
 	$table->output($lang->mybot_register);
 
 
@@ -664,7 +674,7 @@ if($mybb->input['action']=="add") {
 //	$PL->cache_delete("mybot_rules");
 
 	flash_message($lang->mybot_cache_reloaded, 'success');
-	admin_redirect("index.php?module=user-mybot");	
+	admin_redirect("index.php?module=user-mybot");
 } else {
 	generate_tabs("overview");
 	$rules = mybot_cache_load();
@@ -674,43 +684,51 @@ if($mybb->input['action']=="add") {
 	$table->construct_header($lang->mybot_conditions, array("width"=>"35%"));
 	$table->construct_header($lang->mybot_actions, array("width"=>"35%"));
 	$table->construct_header($lang->controls, array("colspan"=>2, "width"=>"20%"));
-	
-	foreach($rules as $rule) {
-		unset($conditions); unset($actions);
-		if(array_key_exists("user", $rule['conditions']))
-			$conditions[] = $lang->mybot_conditions_user;
-	
-		if(array_key_exists("group", $rule['conditions']))
-			$conditions[] = $lang->mybot_conditions_group;
-	
-	   	if(array_key_exists("forum", $rule['conditions']))
-			$conditions[] = $lang->mybot_conditions_forum;
-	
-	   	if(array_key_exists("string", $rule['conditions']))
-			$conditions[] = $lang->mybot_conditions_string;
-	
-	
-		if(array_key_exists("answer", $rule['actions']))
-			$actions[] = $lang->mybot_actions_answer;
-	
-		if(array_key_exists("move", $rule['actions']))
-			$actions[] = $lang->mybot_actions_move;
-	
-		if(array_key_exists("delete", $rule['actions']))
-			$actions[] = $lang->mybot_actions_delete;
 
-    	if(array_key_exists("stick", $rule['actions']))
-			$actions[] = $lang->mybot_actions_stick;
+	if(is_Array($rules) && sizeof($rules) > 0) {
+		foreach($rules as $rule) {
+			unset($conditions); unset($actions);
+			if(array_key_exists("user", $rule['conditions']))
+				$conditions[] = $lang->mybot_conditions_user;
 	
-		if(array_key_exists("pm", $rule['actions']))
-			$actions[] = $lang->mybot_actions_pm;
-
-
-		$table->construct_cell($rule['title']);
-		$table->construct_cell(implode(", ", $conditions));
-		$table->construct_cell(implode(", ", $actions));
-		$table->construct_cell("<a href=\"index.php?module=user-mybot&amp;action=edit&amp;id={$rule['id']}\">{$lang->edit}</a>");
-		$table->construct_cell("<a href=\"index.php?module=user-mybot&amp;action=delete&amp;id={$rule['id']}\">{$lang->delete}</a>");
+			if(array_key_exists("group", $rule['conditions']))
+				$conditions[] = $lang->mybot_conditions_group;
+	
+		   	if(array_key_exists("forum", $rule['conditions']))
+				$conditions[] = $lang->mybot_conditions_forum;
+	
+		   	if(array_key_exists("string", $rule['conditions']))
+				$conditions[] = $lang->mybot_conditions_string;
+	
+	
+			if(array_key_exists("answer", $rule['actions']))
+				$actions[] = $lang->mybot_actions_answer;
+	
+			if(array_key_exists("move", $rule['actions']))
+				$actions[] = $lang->mybot_actions_move;
+	
+			if(array_key_exists("delete", $rule['actions']))
+				$actions[] = $lang->mybot_actions_delete;
+	
+	    	if(array_key_exists("stick", $rule['actions']))
+				$actions[] = $lang->mybot_actions_stick;
+	
+	    	if(array_key_exists("close", $rule['actions']))
+				$actions[] = $lang->mybot_actions_close;
+	
+			if(array_key_exists("pm", $rule['actions']))
+				$actions[] = $lang->mybot_actions_pm;
+	
+	
+			$table->construct_cell($rule['title']);
+			$table->construct_cell(implode(", ", $conditions));
+			$table->construct_cell(implode(", ", $actions));
+			$table->construct_cell("<a href=\"index.php?module=user-mybot&amp;action=edit&amp;id={$rule['id']}\">{$lang->edit}</a>");
+			$table->construct_cell("<a href=\"index.php?module=user-mybot&amp;action=delete&amp;id={$rule['id']}\">{$lang->delete}</a>");
+			$table->construct_row();
+		}
+	} else {
+		$table->construct_cell($lang->mybot_no_rules, array("colspan"=>5, "style"=>"text-align: center"));
 		$table->construct_row();		
 	}
 	$table->output($lang->mybot_overview);

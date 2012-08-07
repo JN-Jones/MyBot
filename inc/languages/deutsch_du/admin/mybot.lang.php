@@ -12,8 +12,8 @@ $l['mybot_post_desc'] = "Hier kannst du als Bot posten";
 $l['mybot_documentation'] = "Dokumentation";
 $l['mybot_documentation_desc'] = "Hier siehst du alle Variablen die du in unterschiedlichen Texten einsetzen kannst";
 $l['mybot_cache_reload'] = "Cache neuladen";
-$l['mybot_editrule'] = "Regel bearbeiten";
 $l['mybot_no_id'] = "Keine ID angegeben";
+$l['mybot_no_rules'] = "Bisher keine Regeln vorhanden";
 
 /* Auflistung */
 $l['mybot_title'] = "Titel";
@@ -27,6 +27,7 @@ $l['mybot_actions_answer'] = "Antworten";
 $l['mybot_actions_move'] = "Verschieben";
 $l['mybot_actions_delete'] = "Löschen";
 $l['mybot_actions_stick'] = "Als wichtig markieren";
+$l['mybot_actions_close'] = "Öffnen/Schließen";
 $l['mybot_actions_pm'] = "Nachricht schreiben";
 
 /* Cache Update */
@@ -88,6 +89,7 @@ $l['mybot_add_action_answer'] = "Antworten";
 $l['mybot_add_action_move'] = "Beitrag/Thema verschieben";
 $l['mybot_add_action_delete'] = "Beitrag/Thema löschen";
 $l['mybot_add_action_stick'] = "Thema als wichtig/unwichtig markieren";
+$l['mybot_add_action_close'] = "Thema öffnen/schließen";
 $l['mybot_add_action_pm'] = "Private Nachricht schicken";
 $l['mybot_add_action_not'] = "Bitte wähle mindestens eine Aktion";
 $l['mybot_add_user'] = "User";
