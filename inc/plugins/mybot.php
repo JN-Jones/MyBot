@@ -25,7 +25,7 @@ function mybot_info()
 		"website"		=> "",
 		"author"		=> "Jones",
 		"authorsite"	=> "http://mybbdemo.tk",
-		"version"		=> "1.0 Beta 1",
+		"version"		=> "1.0 Beta 2",
 		"guid" 			=> "",
 		"compatibility" => "16*"
 	);
@@ -448,6 +448,7 @@ function mybot_work($info, $type)
 		$user['displaygroup'] = $user['usergroup'];
 	}
 	$usergroup = $groupscache[$user['displaygroup']];
+	$thread = get_thread($info['tid']);
 	$active = array();
 	foreach($rules as $rule) {
 		if(!@in_array($info['uid'], $rule['conditions']['user']) && array_key_exists("user", $rule['conditions'])) {
@@ -460,6 +461,9 @@ function mybot_work($info, $type)
 		    continue;
 		}
 		if(strpos($info['message'], $rule['conditions']['string']) === false && array_key_exists("string", $rule['conditions'])) {
+		    continue;
+		}
+		if($thread['firstpost'] != $info['pid'] && array_key_exists("thread", $rule['conditions'])) {
 		    continue;
 		}
 		$active[] = $rule;
@@ -503,10 +507,10 @@ function mybot_work($info, $type)
 
 		if(array_key_exists("move", $rule['actions'])) {
 			$info['tid'] = $moderation->move_thread($info['tid'], $rule['actions']['move']);
+			$thread = get_thread($info['tid']);
 		}
 
 		if(array_key_exists("delete", $rule['actions'])) {
-			$thread = get_thread($info['tid']);
 			if($rule['actions']['delete'] == "thread" || $thread['firstpost'] == $info['pid'])
 				$moderation->delete_thread($info['tid']);
 			else
@@ -514,7 +518,6 @@ function mybot_work($info, $type)
 		}
 
     	if(array_key_exists("stick", $rule['actions'])) {
-			$thread = get_thread($info['tid']);
 			if($thread['sticky'] == 1)
 				$moderation->unstick_threads($info['tid']);
 			else
@@ -522,7 +525,6 @@ function mybot_work($info, $type)
 		}
 		
     	if(array_key_exists("close", $rule['actions'])) {
-			$thread = get_thread($info['tid']);
 			if($thread['closed'] == 1)
 				$moderation->open_threads($info['tid']);
 			else
@@ -533,13 +535,12 @@ function mybot_work($info, $type)
 		    if($rule['actions']['pm']['user'] == "last")
 				$rule['actions']['pm']['user'] = $info['uid'];
 			elseif($rule['actions']['pm']['user'] == "start") {
-				$thread = get_thread($info['tid']);
 				$post = get_post($thread['firstpost']);
 				$rule['actions']['pm']['user'] = $post['uid'];
 			}
 		    
 			$pm = array(
-				"subject" => $rule['actions']['pm']['subject'],
+				"subject" => mybot_parser($rule['actions']['pm']['subject'], "thread", $additional),
 				"message" => mybot_parser($rule['actions']['pm']['message'], "thread", $additional),
 				"icon" => "",
 				"fromid" => $mybb->settings['mybot_user'],

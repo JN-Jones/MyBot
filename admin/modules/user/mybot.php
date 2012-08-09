@@ -76,8 +76,11 @@ if($mybb->input['action']=="add") {
 	       	if(in_Array("string", $mybb->input['conditions']))
 			    $conditions['string'] = $mybb->input['string'];
 
+			if(in_Array("thread", $mybb->input['conditions']))
+			    $conditions['thread'] = true;
 
-			if(in_Array("answer", $mybb->input['actions']))
+   
+  			if(in_Array("answer", $mybb->input['actions']))
 			    $actions['answer'] = $mybb->input['answer'];
 
 			if(in_Array("move", $mybb->input['actions']))
@@ -135,7 +138,8 @@ if($mybb->input['action']=="add") {
 				"user" => $lang->mybot_add_conditions_user,
 				"group" => $lang->mybot_add_conditions_group,
 				"forum" => $lang->mybot_add_conditions_forum,
-				"string" => $lang->mybot_add_conditions_string);
+				"string" => $lang->mybot_add_conditions_string,
+				"thread" => $lang->mybot_add_conditions_thread);
 		$add_conditions = $form->generate_select_box("conditions[]", $conditions_list, $mybb->input['conditions'], array("multiple"=>true, "id"=>"conditions"));
 		$form_container->output_row($lang->mybot_add_conditions." <em>*</em>", $lang->mybot_add_conditions_desc, $add_conditions);
 
@@ -291,6 +295,9 @@ if($mybb->input['action']=="add") {
 	       	if(in_Array("string", $mybb->input['conditions']))
 			    $conditions['string'] = $mybb->input['string'];
 
+    		if(in_Array("thread", $mybb->input['conditions']))
+			    $conditions['thread'] = true;
+
 
 			if(in_Array("answer", $mybb->input['actions']))
 			    $actions['answer'] = $mybb->input['answer'];
@@ -347,6 +354,9 @@ if($mybb->input['action']=="add") {
 	   	if(array_key_exists("string", $rule['conditions']))
 			$conditions[] = "string";
 
+		if(array_key_exists("thread", $rule['conditions']))
+		    $conditions[] = "thread";
+
 
 		if(array_key_exists("answer", $rule['actions']))
 			$actions[] = "answer";
@@ -396,7 +406,8 @@ if($mybb->input['action']=="add") {
 				"user" => $lang->mybot_add_conditions_user,
 				"group" => $lang->mybot_add_conditions_group,
 				"forum" => $lang->mybot_add_conditions_forum,
-				"string" => $lang->mybot_add_conditions_string);
+				"string" => $lang->mybot_add_conditions_string,
+				"thread" => $lang->mybot_add_conditions_thread);
 		$add_conditions = $form->generate_select_box("conditions[]", $conditions_list, $conditions, array("multiple"=>true, "id"=>"conditions"));
 		$form_container->output_row($lang->mybot_add_conditions." <em>*</em>", $lang->mybot_add_conditions_desc, $add_conditions);
 
@@ -699,6 +710,9 @@ if($mybb->input['action']=="add") {
 	
 		   	if(array_key_exists("string", $rule['conditions']))
 				$conditions[] = $lang->mybot_conditions_string;
+
+   		   	if(array_key_exists("thread", $rule['conditions']))
+				$conditions[] = $lang->mybot_conditions_thread;
 	
 	
 			if(array_key_exists("answer", $rule['actions']))
