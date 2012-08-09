@@ -25,7 +25,7 @@ function mybot_info()
 		"website"		=> "",
 		"author"		=> "Jones",
 		"authorsite"	=> "http://mybbdemo.tk",
-		"version"		=> "1.0 Beta 2",
+		"version"		=> "1.0 Beta 2.1",
 		"guid" 			=> "",
 		"compatibility" => "16*"
 	);
@@ -34,7 +34,6 @@ function mybot_info()
 function mybot_install()
 {
 	global $lang, $PL, $db;
-	mybot_uninstall();
 	$plugininfo = mybot_info();
 	$lang->load("mybot");
     if(!file_exists(PLUGINLIBRARY))
@@ -50,6 +49,7 @@ function mybot_install()
 //        flash_message($PL->version, "error");
         admin_redirect("index.php?module=config-plugins");
     }
+	mybot_uninstall();
 	$db->query("CREATE TABLE `".TABLE_PREFIX."mybot` ( `id` int(11) NOT NULL AUTO_INCREMENT, `title` varchar(50) DEFAULT NULL, `conditions` text NOT NULL, `actions` text NOT NULL, PRIMARY KEY (`id`) ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1");
 	$PL->settings("mybot",
 	  	"MyBot",
