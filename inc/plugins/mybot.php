@@ -25,7 +25,7 @@ function mybot_info()
 		"website"		=> "http://mybbdemo.tk",
 		"author"		=> "Jones",
 		"authorsite"	=> "http://mybbdemo.tk",
-		"version"		=> "1.0",
+		"version"		=> "1.0.1",
 		"guid" 			=> "807812530461f05f83ac7992a83c0b41",
 		"compatibility" => "16*"
 	);
