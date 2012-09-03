@@ -128,6 +128,7 @@ if($mybb->input['action']=="do_add") {
 		    $message = $lang->sprintf($lang->mybot_installed_user, $lang->mybot_installed, $mybb->input['username']);
 		else
 			$message = $lang->mybot_installed;
+		rebuild_settings();
 		flash_message($message, 'success');
 		admin_redirect("index.php?module=config-plugins");
 	}

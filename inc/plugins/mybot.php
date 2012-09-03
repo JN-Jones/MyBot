@@ -135,6 +135,7 @@ function mybot_uninstall()
 	$db->drop_table("mybot");
     $PL->settings_delete("mybot");
 	$PL->cache_delete("mybot_version");
+	$PL->cache_delete("mybot_rules");
 }
 
 function mybot_admin_config_action_handler($actions)
