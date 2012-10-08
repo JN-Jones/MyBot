@@ -415,7 +415,7 @@ function mybot_cache_update($load = true, $rules = array())
 		    $rules[] = $rule;
 	}
 
-	for($i=0; $i<sizeof($rules); $i++) {
+	for($i=0; $i<sizeof($rules); ++$i) {
 		if(!is_Array($rules[$i]['conditions']))
 		    $rules[$i]['conditions'] = @unserialize($rules[$i]['conditions']);
 		if(!is_Array($rules[$i]['actions']))
@@ -518,7 +518,7 @@ function mybot_work($info, $type)
 	$additional['pid'] = $pid;
 	$additional['post']['timestamp'] = $info['dateline'];
 	$date = time();
-	$date++;
+	++$date;
 	foreach($rules as $rule) {
 		if(array_key_exists("answer", $rule['actions'])) {
             $subject = preg_replace('#RE:\s?#i', '', $info['subject']);
@@ -544,7 +544,7 @@ function mybot_work($info, $type)
 			}
 	        $ninfo = $posthandler->insert_post();
 	        $pid = $ninfo['pid'];
-	        $date++;
+	        ++$date;
 		}
 
 		if(array_key_exists("move", $rule['actions'])) {

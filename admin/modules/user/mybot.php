@@ -235,7 +235,7 @@ if($mybb->input['action']=="add") {
 	}
 } elseif($mybb->input['action']=="edit") {
 	generate_tabs("overview");
-	$id = intval($mybb->input['id']);
+	$id = (int)$mybb->input['id'];
 	if(!$id) {
 		flash_message($lang->mybot_no_id, 'error');
 		admin_redirect("index.php?module=".MODULE);
@@ -509,7 +509,7 @@ if($mybb->input['action']=="add") {
 		</script>';
 	}
 } elseif($mybb->input['action']=="delete") {
-	$id = intval($mybb->input['id']);
+	$id = (int)$mybb->input['id'];
 	if(!$id) {
 		flash_message($lang->mybot_no_id, 'error');
 		admin_redirect("index.php?module=".MODULE);
