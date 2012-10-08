@@ -4,11 +4,17 @@ if(!defined("IN_MYBB"))
 	header("HTTP/1.0 404 Not Found");
 	exit;
 }
+
+if(function_exists("myplugins_info"))
+    define(MODULE, "myplugins-mybot");
+else
+    define(MODULE, "user-mybot");
+
 $PL or require_once PLUGINLIBRARY;
 $lang->load("mybot");
 
 if($mybb->input['action']!="delete") {
-	$page->add_breadcrumb_item($lang->mybot, "index.php?module=user-mybot");
+	$page->add_breadcrumb_item($lang->mybot, "index.php?module=".MODULE);
 	$page->output_header($lang->mybot);
 }
 
@@ -33,6 +39,9 @@ if($mybb->input['action']=="add") {
 
 	       	if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string'])))
 				$errors[] = $lang->mybot_add_string_not;
+
+	       	if(in_Array("postlimit", $mybb->input['conditions']) && !strlen(trim($mybb->input['postlimit'])))
+				$errors[] = $lang->mybot_add_postlimit_not;
 		}
 
 		if(!$mybb->input['actions'])
@@ -76,8 +85,8 @@ if($mybb->input['action']=="add") {
 	       	if(in_Array("string", $mybb->input['conditions']))
 			    $conditions['string'] = $mybb->input['string'];
 
-			if(in_Array("thread", $mybb->input['conditions']))
-			    $conditions['thread'] = true;
+			if(in_Array("postlimit", $mybb->input['conditions']))
+			    $conditions['postlimit'] = $mybb->input['postlimit'];
 
    
   			if(in_Array("answer", $mybb->input['actions']))
@@ -116,7 +125,7 @@ if($mybb->input['action']=="add") {
 			mybot_cache_update(false, $rules);
 
 			flash_message($lang->mybot_add_added, 'success');
-			admin_redirect("index.php?module=user-mybot");
+			admin_redirect("index.php?module=".MODULE);
 		}
 	}
 	if($mybb->request_method != "post" || $errors) {
@@ -128,7 +137,7 @@ if($mybb->input['action']=="add") {
 		while($user = $db->fetch_array($query))
 		    $userarray[$user['uid']] = $user['username'];
 
-		$form = new Form("index.php?module=user-mybot&amp;action=add", "post");
+		$form = new Form("index.php?module=".MODULE."&amp;action=add", "post");
 		$form_container = new FormContainer($lang->mybot_addrule);
 
 		$add_title = $form->generate_text_box("title", $mybb->input['title']);
@@ -139,7 +148,7 @@ if($mybb->input['action']=="add") {
 				"group" => $lang->mybot_add_conditions_group,
 				"forum" => $lang->mybot_add_conditions_forum,
 				"string" => $lang->mybot_add_conditions_string,
-				"thread" => $lang->mybot_add_conditions_thread);
+				"postlimit" => $lang->mybot_add_conditions_postlimit);
 		$add_conditions = $form->generate_select_box("conditions[]", $conditions_list, $mybb->input['conditions'], array("multiple"=>true, "id"=>"conditions"));
 		$form_container->output_row($lang->mybot_add_conditions." <em>*</em>", $lang->mybot_add_conditions_desc, $add_conditions);
 
@@ -154,6 +163,9 @@ if($mybb->input['action']=="add") {
 
 		$add_string = $form->generate_text_area("string", $mybb->input['string']);
 		$form_container->output_row($lang->mybot_add_string, $lang->mybot_add_string_desc, $add_string, '', array(), array('id' => 'string'));
+
+		$add_postlimit = $form->generate_text_box("postlimit", $mybb->input['postlimit']);
+		$form_container->output_row($lang->mybot_add_postlimit, $lang->mybot_add_postlimit_desc, $add_postlimit, '', array(), array('id' => 'postlimit'));
 
 		$action_list = array(
 				"answer" => $lang->mybot_add_action_answer,
@@ -226,7 +238,7 @@ if($mybb->input['action']=="add") {
 	$id = intval($mybb->input['id']);
 	if(!$id) {
 		flash_message($lang->mybot_no_id, 'error');
-		admin_redirect("index.php?module=user-mybot");
+		admin_redirect("index.php?module=".MODULE);
 	}
 	if($mybb->request_method == "post") {
 		if(!strlen(trim($mybb->input['title'])))
@@ -247,6 +259,9 @@ if($mybb->input['action']=="add") {
 
 	       	if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string'])))
 				$errors[] = $lang->mybot_add_string_not;
+
+	       	if(in_Array("postlimit", $mybb->input['conditions']) && !strlen(trim($mybb->input['postlimit'])))
+				$errors[] = $lang->mybot_add_postlimit_not;
 		}
 
 		if(!$mybb->input['actions'])
@@ -295,8 +310,8 @@ if($mybb->input['action']=="add") {
 	       	if(in_Array("string", $mybb->input['conditions']))
 			    $conditions['string'] = $mybb->input['string'];
 
-    		if(in_Array("thread", $mybb->input['conditions']))
-			    $conditions['thread'] = true;
+    		if(in_Array("postlimit", $mybb->input['conditions']))
+			    $conditions['postlimit'] = $mybb->input['postlimit'];
 
 
 			if(in_Array("answer", $mybb->input['actions']))
@@ -337,7 +352,7 @@ if($mybb->input['action']=="add") {
 			mybot_cache_update();
 
 			flash_message($lang->mybot_add_edited, 'success');
-			admin_redirect("index.php?module=user-mybot");
+			admin_redirect("index.php?module=".MODULE);
 		}
 	}
 	if($mybb->request_method != "post" || $errors) {
@@ -354,8 +369,8 @@ if($mybb->input['action']=="add") {
 	   	if(array_key_exists("string", $rule['conditions']))
 			$conditions[] = "string";
 
-		if(array_key_exists("thread", $rule['conditions']))
-		    $conditions[] = "thread";
+		if(array_key_exists("postlimit", $rule['conditions']))
+		    $conditions[] = "postlimit";
 
 
 		if(array_key_exists("answer", $rule['actions']))
@@ -396,7 +411,7 @@ if($mybb->input['action']=="add") {
 		while($user = $db->fetch_array($query))
 		    $userarray[$user['uid']] = $user['username'];
 
-		$form = new Form("index.php?module=user-mybot&amp;action=edit", "post");
+		$form = new Form("index.php?module=".MODULE."&amp;action=edit", "post");
 		$form_container = new FormContainer($lang->mybot_addrule);
 
 		$add_title = $form->generate_text_box("title", $rule['title']);
@@ -407,7 +422,7 @@ if($mybb->input['action']=="add") {
 				"group" => $lang->mybot_add_conditions_group,
 				"forum" => $lang->mybot_add_conditions_forum,
 				"string" => $lang->mybot_add_conditions_string,
-				"thread" => $lang->mybot_add_conditions_thread);
+				"postlimit" => $lang->mybot_add_conditions_postlimit);
 		$add_conditions = $form->generate_select_box("conditions[]", $conditions_list, $conditions, array("multiple"=>true, "id"=>"conditions"));
 		$form_container->output_row($lang->mybot_add_conditions." <em>*</em>", $lang->mybot_add_conditions_desc, $add_conditions);
 
@@ -422,6 +437,9 @@ if($mybb->input['action']=="add") {
 
 		$add_string = $form->generate_text_area("string", $rule['conditions']['string']);
 		$form_container->output_row($lang->mybot_add_string, $lang->mybot_add_string_desc, $add_string, '', array(), array('id' => 'string'));
+
+		$add_postlimit = $form->generate_text_box("postlimit", $rule['conditions']['postlimit']);
+		$form_container->output_row($lang->mybot_add_postlimit, $lang->mybot_add_postlimit_desc, $add_postlimit, '', array(), array('id' => 'postlimit'));
 
 		$action_list = array(
 				"answer" => $lang->mybot_add_action_answer,
@@ -494,12 +512,12 @@ if($mybb->input['action']=="add") {
 	$id = intval($mybb->input['id']);
 	if(!$id) {
 		flash_message($lang->mybot_no_id, 'error');
-		admin_redirect("index.php?module=user-mybot");
+		admin_redirect("index.php?module=".MODULE);
 	}
 
 	if($mybb->input['no'])
 	{
-		admin_redirect("index.php?module=user-mybot");
+		admin_redirect("index.php?module=".MODULE);
 	}
 	else
 	{
@@ -507,9 +525,9 @@ if($mybb->input['action']=="add") {
 			$db->delete_query("mybot", "id='{$id}'");
 			mybot_cache_update();
 			flash_message($lang->mybot_delete_success, 'success');
-			admin_redirect("index.php?module=user-mybot");
+			admin_redirect("index.php?module=".MODULE);
 		} else {
-			$page->output_confirm_action("index.php?module=user-mybot&action=delete&id={$id}", $lang->mybot_delete_confirm);
+			$page->output_confirm_action("index.php?module=".MODULE."&action=delete&id={$id}", $lang->mybot_delete_confirm);
 			exit;
 		}
 	}
@@ -519,17 +537,17 @@ if($mybb->input['action']=="add") {
 		if(!strlen(trim($mybb->input['forum'])))
 		{
 			flash_message($lang->mybot_post_forum_not, 'error');
-			admin_redirect("index.php?module=user-mybot&amp;action=post");
+			admin_redirect("index.php?module=".MODULE."&amp;action=post");
 		}
 		if(!strlen(trim($mybb->input['subject'])))
 		{
 			flash_message($lang->mybot_post_subject_not, 'error');
-			admin_redirect("index.php?module=user-mybot&amp;action=post");
+			admin_redirect("index.php?module=".MODULE."&amp;action=post");
 		}
 		if(!strlen(trim($mybb->input['text'])))
 		{
 			flash_message($lang->mybot_post_text_not, 'error');
-			admin_redirect("index.php?module=user-mybot&amp;action=post");
+			admin_redirect("index.php?module=".MODULE."&amp;action=post");
 		}
 		if(!is_array($forum_cache))
 		{
@@ -537,7 +555,7 @@ if($mybb->input['action']=="add") {
 		}
 		if($forum_cache[$mybb->input['forum']]['type']=="c") {
 			flash_message($lang->mybot_post_category, 'error');
-			admin_redirect("index.php?module=user-mybot&amp;action=post");
+			admin_redirect("index.php?module=".MODULE."&amp;action=post");
 		}
         $name = $db->fetch_field($db->simple_select("users", "username", "uid='{$mybb->settings['mybot_user']}'"), "username");
 		// Set up posthandler.
@@ -565,7 +583,7 @@ if($mybb->input['action']=="add") {
 		} else {
 	        $posthandler->insert_thread();
 			flash_message($lang->mybot_post_inserted, 'success');
-			admin_redirect("index.php?module=user-mybot&amp;action=post");
+			admin_redirect("index.php?module=".MODULE."&amp;action=post");
 		}
 	}
 	if($mybb->request_method != "post" || $errors) {
@@ -573,7 +591,7 @@ if($mybb->input['action']=="add") {
 		{
 			$page->output_inline_error($errors);
 		}
-		$form = new Form("index.php?module=user-mybot&amp;action=post", "post");
+		$form = new Form("index.php?module=".MODULE."&amp;action=post", "post");
 		$form_container = new FormContainer($lang->mybot_post);
 
 		$post_forum = $form->generate_forum_select("forum", "");
@@ -685,7 +703,7 @@ if($mybb->input['action']=="add") {
 //	$PL->cache_delete("mybot_rules");
 
 	flash_message($lang->mybot_cache_reloaded, 'success');
-	admin_redirect("index.php?module=user-mybot");
+	admin_redirect("index.php?module=".MODULE);
 } else {
 	generate_tabs("overview");
 	$rules = mybot_cache_load();
@@ -711,8 +729,8 @@ if($mybb->input['action']=="add") {
 		   	if(array_key_exists("string", $rule['conditions']))
 				$conditions[] = $lang->mybot_conditions_string;
 
-   		   	if(array_key_exists("thread", $rule['conditions']))
-				$conditions[] = $lang->mybot_conditions_thread;
+   		   	if(array_key_exists("postlimit", $rule['conditions']))
+				$conditions[] = $lang->sprintf($lang->mybot_conditions_postlimit, $rule['conditions']['postlimit']);
 	
 	
 			if(array_key_exists("answer", $rule['actions']))
@@ -737,8 +755,8 @@ if($mybb->input['action']=="add") {
 			$table->construct_cell($rule['title']);
 			$table->construct_cell(implode(", ", $conditions));
 			$table->construct_cell(implode(", ", $actions));
-			$table->construct_cell("<a href=\"index.php?module=user-mybot&amp;action=edit&amp;id={$rule['id']}\">{$lang->edit}</a>");
-			$table->construct_cell("<a href=\"index.php?module=user-mybot&amp;action=delete&amp;id={$rule['id']}\">{$lang->delete}</a>");
+			$table->construct_cell("<a href=\"index.php?module=".MODULE."&amp;action=edit&amp;id={$rule['id']}\">{$lang->edit}</a>");
+			$table->construct_cell("<a href=\"index.php?module=".MODULE."&amp;action=delete&amp;id={$rule['id']}\">{$lang->delete}</a>");
 			$table->construct_row();
 		}
 	} else {
@@ -757,27 +775,27 @@ function generate_tabs($selected)
 	$sub_tabs = array();
 	$sub_tabs['overview'] = array(
 		'title' => $lang->mybot,
-		'link' => "index.php?module=user-mybot",
+		'link' => "index.php?module=".MODULE,
 		'description' => $lang->mybot_overview
 	);
 	$sub_tabs['add'] = array(
 		'title' => $lang->mybot_addrule,
-		'link' => "index.php?module=user-mybot&amp;action=add",
+		'link' => "index.php?module=".MODULE."&amp;action=add",
 		'description' => $lang->mybot_addrule_desc
 	);
 	$sub_tabs['post'] = array(
 		'title' => $lang->mybot_post,
-		'link' => "index.php?module=user-mybot&amp;action=post",
+		'link' => "index.php?module=".MODULE."&amp;action=post",
 		'description' => $lang->mybot_post_desc
 	);
 	$sub_tabs['documentation'] = array(
 		'title' => $lang->mybot_documentation,
-		'link' => "index.php?module=user-mybot&amp;action=documentation",
+		'link' => "index.php?module=".MODULE."&amp;action=documentation",
 		'description' => $lang->mybot_documentation_desc
 	);
 	$sub_tabs['cache'] = array(
 		'title' => $lang->mybot_cache_reload,
-		'link' => "index.php?module=user-mybot&amp;action=cache",
+		'link' => "index.php?module=".MODULE."&amp;action=cache",
 		'description' => ""
 	);
 

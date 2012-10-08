@@ -7,25 +7,33 @@ if(!defined("PLUGINLIBRARY"))
 {
     define("PLUGINLIBRARY", MYBB_ROOT."inc/plugins/pluginlibrary.php");
 }
+if(!$pluginlist)
+    $pluginlist = $cache->read("plugins");
 
 $plugins->add_hook("admin_config_action_handler", "mybot_admin_config_action_handler");
 $plugins->add_hook("admin_config_plugins_activate_commit", "mybot_installed");
-$plugins->add_hook("admin_user_menu", "mybot_admin_user_menu");
-$plugins->add_hook("admin_user_action_handler", "mybot_admin_user_action_handler");
-$plugins->add_hook("admin_user_permissions", "mybot_admin_user_permissions");
 $plugins->add_hook("member_do_register_end", "mybot_register");
 $plugins->add_hook("newthread_do_newthread_end", "mybot_thread");
 $plugins->add_hook("newreply_do_newreply_end", "mybot_post");
+
+if(in_array("myplugins", $pluginlist['active'])) {
+	$plugins->add_hook("myplugins_actions", "mybot_myplugins_actions");
+	$plugins->add_hook("myplugins_permission", "mybot_admin_user_permissions");
+} else {
+	$plugins->add_hook("admin_user_menu", "mybot_admin_user_menu");
+	$plugins->add_hook("admin_user_action_handler", "mybot_admin_user_action_handler");
+	$plugins->add_hook("admin_user_permissions", "mybot_admin_user_permissions");
+}
 
 function mybot_info()
 {
 	return array(
 		"name"			=> "MyBot",
 		"description"	=> "Adds a simple Bot to your MyBB",
-		"website"		=> "http://mybbdemo.tk",
+		"website"		=> "http://jonesboard.tk",
 		"author"		=> "Jones",
-		"authorsite"	=> "http://mybbdemo.tk",
-		"version"		=> "1.0.1",
+		"authorsite"	=> "http://jonesboard.tk",
+		"version"		=> "1.1",
 		"guid" 			=> "807812530461f05f83ac7992a83c0b41",
 		"compatibility" => "16*"
 	);
@@ -159,6 +167,26 @@ function mybot_admin_user_menu($sub_menu)
 	$sub_menu[] = array("id" => "mybot", "title" => $lang->mybot, "link" => "index.php?module=user-mybot");
 
 	return $sub_menu;
+}
+
+function mybot_myplugins_actions($actions)
+{
+	global $page, $lang, $info;
+	$lang->load("mybot");
+
+	$actions['mybot'] = array(
+		"active" => "mybot",
+		"file" => "../user/mybot.php"
+	);
+
+	$sub_menu = array();
+	$sub_menu['10'] = array("id" => "mybot", "title" => $lang->mybot, "link" => "index.php?module=myplugins-mybot");
+	$sidebar = new SidebarItem($lang->mybot);
+	$sidebar->add_menu_items($sub_menu, $actions[$info]['active']);
+
+	$page->sidebar .= $sidebar->get_markup();
+
+	return $actions;
 }
 
 function mybot_admin_user_action_handler($actions)
@@ -450,21 +478,34 @@ function mybot_work($info, $type)
 	}
 	$usergroup = $groupscache[$user['displaygroup']];
 	$thread = get_thread($info['tid']);
+	++$thread['replies'];
+	if($type == "post")
+		++$thread['replies'];
 	$active = array();
 	foreach($rules as $rule) {
-		if(!@in_array($info['uid'], $rule['conditions']['user']) && array_key_exists("user", $rule['conditions'])) {
+		if(array_key_exists("user", $rule['conditions']) && !@in_array($info['uid'], $rule['conditions']['user'])) {
 			continue;
 		}
-		if(!@in_array($usergroup['gid'], $rule['conditions']['group']) && array_key_exists("group", $rule['conditions'])) {
+		if(array_key_exists("group", $rule['conditions']) && !@in_array($usergroup['gid'], $rule['conditions']['group'])) {
 		    continue;
 		}
-		if(!@in_array($info['fid'], $rule['conditions']['forum']) && array_key_exists("forum", $rule['conditions'])) {
+		if(array_key_exists("forum", $rule['conditions']) && !@in_array($info['fid'], $rule['conditions']['forum'])) {
 		    continue;
 		}
-		if(strpos($info['message'], $rule['conditions']['string']) === false && array_key_exists("string", $rule['conditions'])) {
-		    continue;
+		if(array_key_exists("string", $rule['conditions'])) {
+			$strings = explode("\n", $rule['conditions']['string']);
+			$found = false;
+			$length = sizeOf($strings);
+			foreach($strings as $key => $string) {
+				if($key+1 != $length)
+				    $string = substr($string, 0, -1);
+				if(strpos(strtolower($info['message']), strtolower($string)) !== false)
+				    $found = true;
+			}
+			if(!$found)
+			    continue;
 		}
-		if($thread['firstpost'] != $info['pid'] && array_key_exists("thread", $rule['conditions'])) {
+		if(array_key_exists("postlimit", $rule['conditions']) && $thread['replies'] > $rule['conditions']['postlimit']) {
 		    continue;
 		}
 		$active[] = $rule;

@@ -34,8 +34,8 @@ if($mybb->input['action']=="do_add") {
 		admin_redirect("index.php?module=config-installbot");
 	}
 	
-	if(intval($mybb->input['user'])!=-1)
-	    $uid = intval($mybb->input['user']);
+	if((int)$mybb->input['user']!=-1)
+	    $uid = (int)$mybb->input['user'];
 	else {
 	    if(!strlen(trim($mybb->input['username'])))
 		{
@@ -61,8 +61,8 @@ if($mybb->input['action']=="do_add") {
 			admin_redirect("index.php?module=config-installbot");
 		}
 
-    	if(intval($mybb->input['group'])!=-1)
-		    $gid = intval($mybb->input['group']);
+    	if((int)$mybb->input['group']!=-1)
+		    $gid = (int)$mybb->input['group'];
 		else {
 	        if(!strlen(trim($mybb->input['groupname'])))
 			{
