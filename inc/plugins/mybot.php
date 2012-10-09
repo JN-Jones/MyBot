@@ -54,11 +54,18 @@ function mybot_install()
     if($PL->version < 8)
     {
         flash_message($lang->mybot_pl_old, "error");
-//        flash_message($PL->version, "error");
         admin_redirect("index.php?module=config-plugins");
     }
 	mybot_uninstall();
-	$db->query("CREATE TABLE `".TABLE_PREFIX."mybot` ( `id` int(11) NOT NULL AUTO_INCREMENT, `title` varchar(50) DEFAULT NULL, `conditions` text NOT NULL, `actions` text NOT NULL, PRIMARY KEY (`id`) ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1");
+
+	$col = $db->build_create_table_collation();
+	$db->query("CREATE TABLE `".TABLE_PREFIX."mybot` (
+				`id` int(11) NOT NULL AUTO_INCREMENT,
+				`title` varchar(50) DEFAULT NULL,
+				`conditions` text NOT NULL,
+				`actions` text NOT NULL,
+	PRIMARY KEY (`id`) ) ENGINE=MyISAM {$col}");
+	
 	$PL->settings("mybot",
 	  	"MyBot",
 	  	"Settings for the \"MyBot\" Plugin",
