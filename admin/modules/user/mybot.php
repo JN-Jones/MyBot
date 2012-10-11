@@ -42,6 +42,9 @@ if($mybb->input['action']=="add") {
 
 	       	if(in_Array("postlimit", $mybb->input['conditions']) && !strlen(trim($mybb->input['postlimit'])))
 				$errors[] = $lang->mybot_add_postlimit_not;
+
+    	    if(in_Array("prefix", $mybb->input['conditions']) && !$mybb->input['prefix'])
+				$errors[] = $lang->mybot_add_prefix_not;
 		}
 
 		if(!$mybb->input['actions'])
@@ -56,6 +59,12 @@ if($mybb->input['action']=="add") {
 
 			if(in_Array("delete", $mybb->input['actions']) && !strlen(trim($mybb->input['delete'])))
 				$errors[] = $lang->mybot_add_delete_not;
+
+			if(in_Array("report", $mybb->input['actions']) && !strlen(trim($mybb->input['report'])))
+				$errors[] = $lang->mybot_add_report_not;
+
+			if(in_Array("approve", $mybb->input['actions']) && !strlen(trim($mybb->input['approve'])))
+				$errors[] = $lang->mybot_add_approve_not;
 
 			if(in_Array("pm", $mybb->input['actions'])) {
 				if(!$mybb->input['pm'])
@@ -88,6 +97,9 @@ if($mybb->input['action']=="add") {
 			if(in_Array("postlimit", $mybb->input['conditions']))
 			    $conditions['postlimit'] = $mybb->input['postlimit'];
 
+			if(in_Array("prefix", $mybb->input['conditions']))
+			    $conditions['prefix'] = $mybb->input['prefix'];
+
    
   			if(in_Array("answer", $mybb->input['actions']))
 			    $actions['answer'] = $mybb->input['answer'];
@@ -103,6 +115,12 @@ if($mybb->input['action']=="add") {
 
 			if(in_Array("close", $mybb->input['actions']))
 			    $actions['close'] = true;
+
+			if(in_Array("report", $mybb->input['actions']))
+			    $actions['report'] = $mybb->input['report'];
+
+			if(in_Array("approve", $mybb->input['actions']))
+			    $actions['approve'] = $mybb->input['approve'];
 
 			if(in_Array("pm", $mybb->input['actions'])) {
 			    $actions['pm']['user'] = $mybb->input['pm'];
@@ -148,7 +166,8 @@ if($mybb->input['action']=="add") {
 				"group" => $lang->mybot_add_conditions_group,
 				"forum" => $lang->mybot_add_conditions_forum,
 				"string" => $lang->mybot_add_conditions_string,
-				"postlimit" => $lang->mybot_add_conditions_postlimit);
+				"postlimit" => $lang->mybot_add_conditions_postlimit,
+				"prefix" => $lang->mybot_add_conditions_prefix);
 		$add_conditions = $form->generate_select_box("conditions[]", $conditions_list, $mybb->input['conditions'], array("multiple"=>true, "id"=>"conditions"));
 		$form_container->output_row($lang->mybot_add_conditions." <em>*</em>", $lang->mybot_add_conditions_desc, $add_conditions);
 
@@ -167,12 +186,22 @@ if($mybb->input['action']=="add") {
 		$add_postlimit = $form->generate_text_box("postlimit", $mybb->input['postlimit']);
 		$form_container->output_row($lang->mybot_add_postlimit, $lang->mybot_add_postlimit_desc, $add_postlimit, '', array(), array('id' => 'postlimit'));
 
+		$prefixes = build_prefixes();
+		if(!$prefixes)
+		    $prefixes = array();
+		foreach($prefixes as $prefix)
+		    $pr[$prefix['pid']] = $prefix['prefix'];
+		$add_prefixes = $form->generate_select_box("prefix[]", $pr, $mybb->input['prefix'], array("multiple"=>true));
+		$form_container->output_row($lang->mybot_add_prefix, $lang->mybot_add_prefix_desc, $add_prefixes, '', array(), array('id' => 'prefix'));
+
 		$action_list = array(
 				"answer" => $lang->mybot_add_action_answer,
 				"move" => $lang->mybot_add_action_move,
 				"delete" => $lang->mybot_add_action_delete,
 				"stick" => $lang->mybot_add_action_stick,
 				"close" => $lang->mybot_add_action_close,
+				"report" => $lang->mybot_add_action_report,
+				"approve" => $lang->mybot_add_action_approve,
 				"pm" => $lang->mybot_add_action_pm);
 		$add_actions = $form->generate_select_box("actions[]", $action_list, $mybb->input['actions'], array("multiple"=>true, "id"=>"action"));
 		$form_container->output_row($lang->mybot_add_action." <em>*</em>", $lang->mybot_add_action_desc, $add_actions);
@@ -183,9 +212,16 @@ if($mybb->input['action']=="add") {
 		$add_move = $form->generate_forum_select("move", $mybb->input['move']);
 		$form_container->output_row($lang->mybot_add_move, $lang->mybot_add_move_desc, $add_move, '', array(), array('id' => 'move'));
 
-		$add_delete = $form->generate_radio_button("delete", "thread", $lang->thread, array("checked"=>true));
+		$add_delete  = $form->generate_radio_button("delete", "thread", $lang->thread, array("checked"=>true));
 		$add_delete .= " ".$form->generate_radio_button("delete", "post", $lang->post);
 		$form_container->output_row($lang->mybot_add_delete, $lang->mybot_add_delete_desc, $add_delete, '', array(), array('id' => 'delete'));
+
+		$add_report = $form->generate_text_box("report", $mybb->input['report']);
+		$form_container->output_row($lang->mybot_add_report, $lang->mybot_add_report_desc, $add_report, '', array(), array('id' => 'report'));
+
+		$add_approve  = $form->generate_radio_button("approve", "thread", $lang->thread, array("checked"=>true));
+		$add_approve .= " ".$form->generate_radio_button("approve", "post", $lang->post);
+		$form_container->output_row($lang->mybot_add_approve, $lang->mybot_add_approve_desc, $add_approve, '', array(), array('id' => 'approve'));
 
 		$pm_list = array(
 				"last" => $lang->mybot_add_pm_last,
@@ -262,6 +298,9 @@ if($mybb->input['action']=="add") {
 
 	       	if(in_Array("postlimit", $mybb->input['conditions']) && !strlen(trim($mybb->input['postlimit'])))
 				$errors[] = $lang->mybot_add_postlimit_not;
+
+	       	if(in_Array("prefix", $mybb->input['conditions']) && !$mybb->input['prefix'])
+				$errors[] = $lang->mybot_add_prefix_not;
 		}
 
 		if(!$mybb->input['actions'])
@@ -281,6 +320,12 @@ if($mybb->input['action']=="add") {
 
 			if(in_Array("delete", $mybb->input['actions']) && !strlen(trim($mybb->input['delete'])))
 				$errors[] = $lang->mybot_add_delete_not;
+
+			if(in_Array("report", $mybb->input['actions']) && !strlen(trim($mybb->input['report'])))
+				$errors[] = $lang->mybot_add_report_not;
+
+			if(in_Array("approve", $mybb->input['actions']) && !strlen(trim($mybb->input['approve'])))
+				$errors[] = $lang->mybot_add_approve_not;
 
 			if(in_Array("pm", $mybb->input['actions'])) {
 				if(!$mybb->input['pm'])
@@ -313,6 +358,9 @@ if($mybb->input['action']=="add") {
     		if(in_Array("postlimit", $mybb->input['conditions']))
 			    $conditions['postlimit'] = $mybb->input['postlimit'];
 
+    		if(in_Array("prefix", $mybb->input['conditions']))
+			    $conditions['prefix'] = $mybb->input['prefix'];
+
 
 			if(in_Array("answer", $mybb->input['actions']))
 			    $actions['answer'] = $mybb->input['answer'];
@@ -328,6 +376,12 @@ if($mybb->input['action']=="add") {
 
 			if(in_Array("close", $mybb->input['actions']))
 			    $actions['close'] = true;
+
+			if(in_Array("report", $mybb->input['actions']))
+			    $actions['report'] = $mybb->input['report'];
+
+			if(in_Array("approve", $mybb->input['actions']))
+			    $actions['approve'] = $mybb->input['approve'];
 
 			if(in_Array("pm", $mybb->input['actions'])) {
 			    $actions['pm']['user'] = $mybb->input['pm'];
@@ -372,6 +426,9 @@ if($mybb->input['action']=="add") {
 		if(array_key_exists("postlimit", $rule['conditions']))
 		    $conditions[] = "postlimit";
 
+		if(array_key_exists("prefix", $rule['conditions']))
+		    $conditions[] = "prefix";
+
 
 		if(array_key_exists("answer", $rule['actions']))
 			$actions[] = "answer";
@@ -395,6 +452,22 @@ if($mybb->input['action']=="add") {
     	if(array_key_exists("close", $rule['actions']))
 			$actions[] = "close";
 
+    	if(array_key_exists("report", $rule['actions']))
+			$actions[] = "report";
+
+    	if(array_key_exists("approve", $rule['actions']))
+			$actions[] = "approve";
+
+
+		$athread_checked = true;
+		$apost_checked = false;
+		if(array_key_exists("approve", $rule['actions'])) {
+			$actions[] = "approve";
+			if($rule['actions']['approve'] == "post") {
+				$athread_checked = false;
+				$apost_checked = true;
+			}
+		}
 		if(array_key_exists("pm", $rule['actions'])) {
 			$actions[] = "pm";
 			$pm = $rule['actions']['pm']['user'];
@@ -422,7 +495,8 @@ if($mybb->input['action']=="add") {
 				"group" => $lang->mybot_add_conditions_group,
 				"forum" => $lang->mybot_add_conditions_forum,
 				"string" => $lang->mybot_add_conditions_string,
-				"postlimit" => $lang->mybot_add_conditions_postlimit);
+				"postlimit" => $lang->mybot_add_conditions_postlimit,
+				"prefix" => $lang->mybot_add_conditions_prefix);
 		$add_conditions = $form->generate_select_box("conditions[]", $conditions_list, $conditions, array("multiple"=>true, "id"=>"conditions"));
 		$form_container->output_row($lang->mybot_add_conditions." <em>*</em>", $lang->mybot_add_conditions_desc, $add_conditions);
 
@@ -441,12 +515,22 @@ if($mybb->input['action']=="add") {
 		$add_postlimit = $form->generate_text_box("postlimit", $rule['conditions']['postlimit']);
 		$form_container->output_row($lang->mybot_add_postlimit, $lang->mybot_add_postlimit_desc, $add_postlimit, '', array(), array('id' => 'postlimit'));
 
+		$prefixes = build_prefixes();
+		if(!$prefixes)
+		    $prefixes = array();
+		foreach($prefixes as $prefix)
+		    $pr[$prefix['pid']] = $prefix['prefix'];
+		$add_prefixes = $form->generate_select_box("prefix[]", $pr, $rule['conditions']['prefix'], array("multiple"=>true));
+		$form_container->output_row($lang->mybot_add_prefix, $lang->mybot_add_prefix_desc, $add_prefixes, '', array(), array('id' => 'prefix'));
+
 		$action_list = array(
 				"answer" => $lang->mybot_add_action_answer,
 				"move" => $lang->mybot_add_action_move,
 				"delete" => $lang->mybot_add_action_delete,
 				"stick" => $lang->mybot_add_action_stick,
 				"close" => $lang->mybot_add_action_close,
+				"report" => $lang->mybot_add_action_report,
+				"approve" => $lang->mybot_add_action_approve,
 				"pm" => $lang->mybot_add_action_pm);
 		$add_actions = $form->generate_select_box("actions[]", $action_list, $actions, array("multiple"=>true, "id"=>"action"));
 		$form_container->output_row($lang->mybot_add_action." <em>*</em>", $lang->mybot_add_action_desc, $add_actions);
@@ -460,6 +544,13 @@ if($mybb->input['action']=="add") {
 		$add_delete = $form->generate_radio_button("delete", "thread", $lang->thread, array("checked"=>$thread_checked));
 		$add_delete .= " ".$form->generate_radio_button("delete", "post", $lang->post, array("checked"=>$post_checked));
 		$form_container->output_row($lang->mybot_add_delete, $lang->mybot_add_delete_desc, $add_delete, '', array(), array('id' => 'delete'));
+
+		$add_report = $form->generate_text_box("report", $rule['actions']['report']);
+		$form_container->output_row($lang->mybot_add_report, $lang->mybot_add_report_desc, $add_report, '', array(), array('id' => 'report'));
+
+		$add_approve  = $form->generate_radio_button("approve", "thread", $lang->thread, array("checked"=>$thread_checked));
+		$add_approve .= " ".$form->generate_radio_button("approve", "post", $lang->post, array("checked"=>$apost_checked));
+		$form_container->output_row($lang->mybot_add_approve, $lang->mybot_add_approve_desc, $add_approve, '', array(), array('id' => 'approve'));
 
 		$pm_list = array(
 				"last" => $lang->mybot_add_pm_last,
@@ -731,6 +822,9 @@ if($mybb->input['action']=="add") {
 
    		   	if(array_key_exists("postlimit", $rule['conditions']))
 				$conditions[] = $lang->sprintf($lang->mybot_conditions_postlimit, $rule['conditions']['postlimit']);
+
+   		   	if(array_key_exists("prefix", $rule['conditions']))
+				$conditions[] = $lang->mybot_conditions_prefix;
 	
 	
 			if(array_key_exists("answer", $rule['actions']))
@@ -748,7 +842,13 @@ if($mybb->input['action']=="add") {
 	    	if(array_key_exists("close", $rule['actions']))
 				$actions[] = $lang->mybot_actions_close;
 	
-			if(array_key_exists("pm", $rule['actions']))
+	    	if(array_key_exists("report", $rule['actions']))
+				$actions[] = $lang->mybot_actions_report;
+
+	    	if(array_key_exists("approve", $rule['actions']))
+				$actions[] = $lang->mybot_actions_approve;
+
+    		if(array_key_exists("pm", $rule['actions']))
 				$actions[] = $lang->mybot_actions_pm;
 	
 	

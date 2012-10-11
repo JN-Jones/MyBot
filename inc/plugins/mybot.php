@@ -454,6 +454,7 @@ function mybot_post()
 {
 	global $post, $postinfo;
 	$post['pid'] = $postinfo['pid'];
+	$post['visible'] = $postinfo['visible'];
 	mybot_work($post, "post");
 }
 
@@ -465,9 +466,102 @@ function mybot_thread()
 	mybot_work($new_thread, "thread");
 }
 
+function mybot_report($post, $botname, $reason)
+{
+	global $mybb, $db, $lang, $cache;
+	$lang->load("report");
+	if(!is_array($post))
+	    $post = get_post($post);
+	$thread = get_thread($post['tid']);
+	$forum = get_forum($post['fid']);
+	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
+	{
+		$query = $db->query("
+			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
+			FROM ".TABLE_PREFIX."moderators m
+			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.id)
+			WHERE m.fid IN (".$forum['parentlist'].") AND m.isgroup = '0'
+		");
+		$nummods = $db->num_rows($query);
+		if(!$nummods)
+		{
+			unset($query);
+			$query = $db->query("
+				SELECT u.username, u.email, u.receivepms, u.uid
+				FROM ".TABLE_PREFIX."users u
+				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
+				WHERE (g.cancp=1 OR g.issupermod=1)
+			");
+		}
+
+		while($mod = $db->fetch_array($query))
+		{
+			$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
+			$emailmessage = $lang->sprintf($lang->email_reportpost, $botname, $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']), $thread['subject'], $reason);
+	
+			if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
+			{
+				$pm_recipients[] = $mod['uid'];
+			}
+			else
+			{
+				my_mail($mod['email'], $emailsubject, $emailmessage);
+			}
+		}
+	
+		if(count($pm_recipients) > 0)
+		{
+			$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
+			$emailmessage = $lang->sprintf($lang->email_reportpost, $botname, $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']), $thread['subject'], $reason);
+	
+			require_once  MYBB_ROOT."inc/datahandlers/pm.php";
+			$pmhandler = new PMDataHandler();
+	
+			$pm = array(
+				"subject" => $emailsubject,
+				"message" => $emailmessage,
+				"icon" => 0,
+				"fromid" => $mybb->settings['mybot_user'],
+				"toid" => $pm_recipients
+			);
+	
+			$pmhandler->admin_override = true;
+			$pmhandler->set_data($pm);
+
+			// Now let the pm handler do all the hard work.
+			if(!$pmhandler->validate_pm())
+			{
+				// Force it to valid to just get it out of here
+				$pmhandler->is_validated = true;
+				$pmhandler->errors = array();
+			}
+			$pminfo = $pmhandler->insert_pm();
+		}
+	}
+	else
+	{
+		$reportedpost = array(
+			"pid" => intval($post['pid']),
+			"tid" => $thread['tid'],
+			"fid" => $thread['fid'],
+			"uid" => $mybb->settings['mybot_user'],
+			"dateline" => TIME_NOW,
+			"reportstatus" => 0,
+			"reason" => $db->escape_string(htmlspecialchars_uni($reason))
+		);
+		$db->insert_query("reportedposts", $reportedpost);
+		$cache->update_reportedposts();
+	}
+}
+
 function mybot_work($info, $type)
 {
 	global $PL, $db, $mybb, $groupscache;
+	
+	//We don't want the bot reacting on himself...
+	if($info['uid'] == $mybb->settings['mybot_user'])
+	    return;
+	
     require_once MYBB_ROOT."inc/datahandlers/post.php";
  	$posthandler = new PostDataHandler("insert");
 	require_once MYBB_ROOT."inc/class_moderation.php";
@@ -515,12 +609,15 @@ function mybot_work($info, $type)
 		if(array_key_exists("postlimit", $rule['conditions']) && $thread['replies'] > $rule['conditions']['postlimit']) {
 		    continue;
 		}
+		if(array_key_exists("prefix", $rule['conditions']) && !@in_array($thread['prefix'], $rule['conditions']['prefix'])) {
+			continue;
+		}
 		$active[] = $rule;
 	}
 	$rules = $active;
 
 
-	$pid = $info ['pid'];
+	$pid = $info['pid'];
 	$additional['post'] = $info;
 	$additional['pid'] = $pid;
 	$additional['post']['timestamp'] = $info['dateline'];
@@ -578,6 +675,24 @@ function mybot_work($info, $type)
 				$moderation->open_threads($info['tid']);
 			else
 				$moderation->close_threads($info['tid']);
+		}
+
+    	if(array_key_exists("report", $rule['actions'])) {
+			mybot_report($pid, $additional['botname'], $rule['actions']['report']);
+		}
+
+    	if(array_key_exists("approve", $rule['actions'])) {
+			if($rule['actions']['approve'] == "thread" || $thread['firstpost'] == $info['pid']) {
+				if($thread['visible'] != 1)
+					$moderation->approve_threads($info['tid']);
+				else
+					$moderation->unapprove_threads($info['tid']);
+			} else {
+				if($info['visible'] != 1)
+					$moderation->approve_posts(array($pid));
+				else
+					$moderation->unapprove_posts(array($pid));
+			}
 		}
 
 		if(array_key_exists("pm", $rule['actions'])) {
