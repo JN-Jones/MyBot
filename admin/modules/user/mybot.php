@@ -189,6 +189,7 @@ if($mybb->input['action']=="add") {
 		$prefixes = build_prefixes();
 		if(!$prefixes)
 		    $prefixes = array();
+		$pr = array();
 		foreach($prefixes as $prefix)
 		    $pr[$prefix['pid']] = $prefix['prefix'];
 		$add_prefixes = $form->generate_select_box("prefix[]", $pr, $mybb->input['prefix'], array("multiple"=>true));
@@ -521,6 +522,7 @@ if($mybb->input['action']=="add") {
 		$prefixes = build_prefixes();
 		if(!$prefixes)
 		    $prefixes = array();
+		$pr = array();
 		foreach($prefixes as $prefix)
 		    $pr[$prefix['pid']] = $prefix['prefix'];
 		$add_prefixes = $form->generate_select_box("prefix[]", $pr, $rule['conditions']['prefix'], array("multiple"=>true));
