@@ -16,7 +16,7 @@ $plugins->add_hook("member_do_register_end", "mybot_register");
 $plugins->add_hook("newthread_do_newthread_end", "mybot_thread");
 $plugins->add_hook("newreply_do_newreply_end", "mybot_post");
 
-if(in_array("myplugins", $pluginlist['active'])) {
+if(is_array($pluginlist['active']) && in_array("myplugins", $pluginlist['active'])) {
 	$plugins->add_hook("myplugins_actions", "mybot_myplugins_actions");
 	$plugins->add_hook("myplugins_permission", "mybot_admin_user_permissions");
 } else {

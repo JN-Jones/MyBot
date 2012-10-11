@@ -246,25 +246,28 @@ if($mybb->input['action']=="add") {
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 
-		echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+		echo '<script type="text/javascript" src="./jscripts/mybot_peeker.js"></script>
 		<script type="text/javascript">
 			Event.observe(window, "load", function() {
 				loadPeekers();
 			});
 			function loadPeekers()
 			{
-			/*
 				new Peeker($("conditions"), $("user"), /user/, false);
 				new Peeker($("conditions"), $("group"), /group/, false);
 				new Peeker($("conditions"), $("forum"), /forum/, false);
 				new Peeker($("conditions"), $("string"), /string/, false);
+				new Peeker($("conditions"), $("postlimit"), /postlimit/, false);
+				new Peeker($("conditions"), $("prefix"), /prefix/, false);
 				new Peeker($("action"), $("answer"), /answer/, false);
 				new Peeker($("action"), $("move"), /move/, false);
 				new Peeker($("action"), $("delete"), /delete/, false);
+				new Peeker($("action"), $("report"), /report/, false);
+				new Peeker($("action"), $("approve"), /approve/, false);
 				new Peeker($("action"), $("pm"), /pm/, false);
 				new Peeker($("action"), $("subject"), /pm/, false);
 				new Peeker($("action"), $("message"), /pm/, false);
-			*/
+
 				new Peeker($("pm_select"), $("pm_user"), /other/, false);
 			}
 		</script>';
@@ -576,25 +579,28 @@ if($mybb->input['action']=="add") {
 		$form->output_submit_wrapper($buttons);
 		$form->end();
 
-		echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
+		echo '<script type="text/javascript" src="./jscripts/mybot_peeker.js"></script>
 		<script type="text/javascript">
 			Event.observe(window, "load", function() {
 				loadPeekers();
 			});
 			function loadPeekers()
 			{
-			/*
 				new Peeker($("conditions"), $("user"), /user/, false);
 				new Peeker($("conditions"), $("group"), /group/, false);
 				new Peeker($("conditions"), $("forum"), /forum/, false);
 				new Peeker($("conditions"), $("string"), /string/, false);
+				new Peeker($("conditions"), $("postlimit"), /postlimit/, false);
+				new Peeker($("conditions"), $("prefix"), /prefix/, false);
 				new Peeker($("action"), $("answer"), /answer/, false);
 				new Peeker($("action"), $("move"), /move/, false);
 				new Peeker($("action"), $("delete"), /delete/, false);
+				new Peeker($("action"), $("report"), /report/, false);
+				new Peeker($("action"), $("approve"), /approve/, false);
 				new Peeker($("action"), $("pm"), /pm/, false);
 				new Peeker($("action"), $("subject"), /pm/, false);
 				new Peeker($("action"), $("message"), /pm/, false);
-			*/
+
 				new Peeker($("pm_select"), $("pm_user"), /other/, false);
 			}
 		</script>';
