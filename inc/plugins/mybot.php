@@ -600,7 +600,7 @@ function mybot_work($info, $type)
 			foreach($strings as $key => $string) {
 				if($key+1 != $length)
 				    $string = substr($string, 0, -1);
-				if(strpos(strtolower($info['message']), strtolower($string)) !== false)
+				if($string != "" && strpos(strtolower($info['message']), strtolower($string)) !== false)
 				    $found = true;
 			}
 			if(!$found)
