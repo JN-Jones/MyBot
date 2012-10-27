@@ -27,9 +27,15 @@ if(is_array($pluginlist['active']) && in_array("myplugins", $pluginlist['active'
 
 function mybot_info()
 {
+    $donate = '<div style="float: right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="SQLGRVKSDMZHA">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1">
+</form></div>';
 	return array(
 		"name"			=> "MyBot",
-		"description"	=> "Adds a simple Bot to your MyBB",
+		"description"	=> "Adds a simple Bot to your MyBB{$donate}",
 		"website"		=> "http://jonesboard.tk",
 		"author"		=> "Jones",
 		"authorsite"	=> "http://jonesboard.tk",
@@ -226,6 +232,8 @@ function mybot_parser($text, $type="", $additional=array()) {
 	if($type=="register") {
 		if(isset($additional['registered']))
 			$text = str_replace('{registered}', $additional['registered'], $text);
+		if(isset($additional['regid']))
+			$text = str_replace('{regid}', $additional['regid'], $text);
 	}
 	if($type=="thread") {
 		//We can only replace something if we had a pid
@@ -356,6 +364,7 @@ function mybot_register()
 {
 	global $mybb, $user_info, $db;
 	$additional['registered'] = $user_info['username'];
+	$additional['regid'] = $user_info['uid'];
 	$additional['botname'] = $db->fetch_field($db->simple_select("users", "username", "uid='{$mybb->settings['mybot_user']}'"), "username");
 	if($mybb->settings['mybot_react']=="pm") {
 		$message = mybot_parser($mybb->settings['mybot_react_pm'], "register", $additional);
