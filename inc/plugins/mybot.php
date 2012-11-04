@@ -7,7 +7,7 @@ if(!defined("PLUGINLIBRARY"))
 {
     define("PLUGINLIBRARY", MYBB_ROOT."inc/plugins/pluginlibrary.php");
 }
-if(!$pluginlist)
+if(!isset($pluginlist))
     $pluginlist = $cache->read("plugins");
 
 $plugins->add_hook("admin_config_action_handler", "mybot_admin_config_action_handler");
@@ -579,12 +579,16 @@ function mybot_work($info, $type)
 	$pmhandler = new PMDataHandler();
 
 	$rules = mybot_cache_load();
-	$user = $db->simple_select("users", "usergroup, additionalgroups, displaygroup", "uid='{$info['uid']}'");
-	$user = $db->fetch_array($user);
 	$additional['botname'] = $db->fetch_field($db->simple_select("users", "username", "uid='{$mybb->settings['mybot_user']}'"), "username");
-	if(!$user['displaygroup'])
-	{
-		$user['displaygroup'] = $user['usergroup'];
+	if($info['uid'] != 0) {
+		$user = $db->simple_select("users", "usergroup, additionalgroups, displaygroup", "uid='{$info['uid']}'");
+		$user = $db->fetch_array($user);
+		if(!$user['displaygroup'])
+		{
+			$user['displaygroup'] = $user['usergroup'];
+		}
+	} else {
+		$user['displaygroup'] = 1;
 	}
 	$usergroup = $groupscache[$user['displaygroup']];
 	$thread = get_thread($info['tid']);
