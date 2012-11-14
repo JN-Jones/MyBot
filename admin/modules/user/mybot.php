@@ -40,7 +40,10 @@ if($mybb->input['action']=="add") {
 	       	if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string'])))
 				$errors[] = $lang->mybot_add_string_not;
 
-	       	if(in_Array("postlimit", $mybb->input['conditions']) && !strlen(trim($mybb->input['postlimit'])))
+	       	if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string_reverse'])))
+				$errors[] = $lang->mybot_add_string_reverse_not;
+
+   	       	if(in_Array("postlimit", $mybb->input['conditions']) && !strlen(trim($mybb->input['postlimit'])))
 				$errors[] = $lang->mybot_add_postlimit_not;
 
     	    if(in_Array("prefix", $mybb->input['conditions']) && !$mybb->input['prefix'])
@@ -91,10 +94,12 @@ if($mybb->input['action']=="add") {
 	       	if(in_Array("forum", $mybb->input['conditions']))
 			    $conditions['forum'] = $mybb->input['forum'];
 
-	       	if(in_Array("string", $mybb->input['conditions']))
+	       	if(in_Array("string", $mybb->input['conditions'])) {
 			    $conditions['string'] = $mybb->input['string'];
+			    $conditions['string_reverse'] = $mybb->input['string_reverse'];
+			}
 
-			if(in_Array("postlimit", $mybb->input['conditions']))
+   			if(in_Array("postlimit", $mybb->input['conditions']))
 			    $conditions['postlimit'] = $mybb->input['postlimit'];
 
 			if(in_Array("prefix", $mybb->input['conditions']))
@@ -154,6 +159,7 @@ if($mybb->input['action']=="add") {
 		$query = $db->simple_select("users", "uid, username");
 		while($user = $db->fetch_array($query))
 		    $userarray[$user['uid']] = $user['username'];
+		asort($userarray);
 
 		$form = new Form("index.php?module=".MODULE."&amp;action=add", "post");
 		$form_container = new FormContainer($lang->mybot_addrule);
@@ -182,6 +188,9 @@ if($mybb->input['action']=="add") {
 
 		$add_string = $form->generate_text_area("string", $mybb->input['string']);
 		$form_container->output_row($lang->mybot_add_string, $lang->mybot_add_string_desc, $add_string, '', array(), array('id' => 'string'));
+
+		$add_string_reverse = $form->generate_yes_no_radio("string_reverse", $mybb->input['string_reverse']);
+		$form_container->output_row($lang->mybot_add_string_reverse, $lang->mybot_add_string_reverse_desc, $add_string_reverse, '', array(), array('id' => 'string_reverse'));
 
 		$add_postlimit = $form->generate_text_box("postlimit", $mybb->input['postlimit']);
 		$form_container->output_row($lang->mybot_add_postlimit, $lang->mybot_add_postlimit_desc, $add_postlimit, '', array(), array('id' => 'postlimit'));
@@ -258,6 +267,7 @@ if($mybb->input['action']=="add") {
 				new Peeker($("conditions"), $("group"), /group/, false);
 				new Peeker($("conditions"), $("forum"), /forum/, false);
 				new Peeker($("conditions"), $("string"), /string/, false);
+				new Peeker($("conditions"), $("string_reverse"), /string/, false);
 				new Peeker($("conditions"), $("postlimit"), /postlimit/, false);
 				new Peeker($("conditions"), $("prefix"), /prefix/, false);
 				new Peeker($("action"), $("answer"), /answer/, false);
@@ -300,7 +310,10 @@ if($mybb->input['action']=="add") {
 	       	if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string'])))
 				$errors[] = $lang->mybot_add_string_not;
 
-	       	if(in_Array("postlimit", $mybb->input['conditions']) && !strlen(trim($mybb->input['postlimit'])))
+	       	if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string_reverse'])))
+				$errors[] = $lang->mybot_add_string_reverse_not;
+
+   	       	if(in_Array("postlimit", $mybb->input['conditions']) && !strlen(trim($mybb->input['postlimit'])))
 				$errors[] = $lang->mybot_add_postlimit_not;
 
 	       	if(in_Array("prefix", $mybb->input['conditions']) && !$mybb->input['prefix'])
@@ -356,10 +369,12 @@ if($mybb->input['action']=="add") {
 	       	if(in_Array("forum", $mybb->input['conditions']))
 			    $conditions['forum'] = $mybb->input['forum'];
 
-	       	if(in_Array("string", $mybb->input['conditions']))
+	       	if(in_Array("string", $mybb->input['conditions'])) {
 			    $conditions['string'] = $mybb->input['string'];
+			    $conditions['string_reverse'] = $mybb->input['string_reverse'];
+			}
 
-    		if(in_Array("postlimit", $mybb->input['conditions']))
+       		if(in_Array("postlimit", $mybb->input['conditions']))
 			    $conditions['postlimit'] = $mybb->input['postlimit'];
 
     		if(in_Array("prefix", $mybb->input['conditions']))
@@ -487,6 +502,7 @@ if($mybb->input['action']=="add") {
 		$query = $db->simple_select("users", "uid, username");
 		while($user = $db->fetch_array($query))
 		    $userarray[$user['uid']] = $user['username'];
+		asort($userarray);
 
 		$form = new Form("index.php?module=".MODULE."&amp;action=edit", "post");
 		$form_container = new FormContainer($lang->mybot_addrule);
@@ -515,6 +531,9 @@ if($mybb->input['action']=="add") {
 
 		$add_string = $form->generate_text_area("string", $rule['conditions']['string']);
 		$form_container->output_row($lang->mybot_add_string, $lang->mybot_add_string_desc, $add_string, '', array(), array('id' => 'string'));
+
+		$add_string_reverse = $form->generate_yes_no_radio("string_reverse", $rule['conditions']['string_reverse']);
+		$form_container->output_row($lang->mybot_add_string_reverse, $lang->mybot_add_string_reverse_desc, $add_string_reverse, '', array(), array('id' => 'string_reverse'));
 
 		$add_postlimit = $form->generate_text_box("postlimit", $rule['conditions']['postlimit']);
 		$form_container->output_row($lang->mybot_add_postlimit, $lang->mybot_add_postlimit_desc, $add_postlimit, '', array(), array('id' => 'postlimit'));
@@ -592,6 +611,7 @@ if($mybb->input['action']=="add") {
 				new Peeker($("conditions"), $("group"), /group/, false);
 				new Peeker($("conditions"), $("forum"), /forum/, false);
 				new Peeker($("conditions"), $("string"), /string/, false);
+				new Peeker($("conditions"), $("string_reverse"), /string/, false);
 				new Peeker($("conditions"), $("postlimit"), /postlimit/, false);
 				new Peeker($("conditions"), $("prefix"), /prefix/, false);
 				new Peeker($("action"), $("answer"), /answer/, false);
@@ -733,6 +753,9 @@ if($mybb->input['action']=="add") {
 	$table->construct_cell("{registered}");
 	$table->construct_cell($lang->mybot_doc_registered);
 	$table->construct_row();
+	$table->construct_cell("{regid}");
+	$table->construct_cell($lang->mybot_doc_regid);
+	$table->construct_row();
 
 	$table->output($lang->mybot_register);
 
@@ -825,7 +848,9 @@ if($mybb->input['action']=="add") {
 		   	if(array_key_exists("forum", $rule['conditions']))
 				$conditions[] = $lang->mybot_conditions_forum;
 	
-		   	if(array_key_exists("string", $rule['conditions']))
+		   	if(array_key_exists("string", $rule['conditions']) && $rule['conditions']['string_reverse'])
+				$conditions[] = $lang->mybot_conditions_string_reverse;
+			elseif(array_key_exists("string", $rule['conditions']))
 				$conditions[] = $lang->mybot_conditions_string;
 
    		   	if(array_key_exists("postlimit", $rule['conditions']))

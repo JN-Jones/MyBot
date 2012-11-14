@@ -39,7 +39,7 @@ function mybot_info()
 		"website"		=> "http://jonesboard.tk",
 		"author"		=> "Jones",
 		"authorsite"	=> "http://jonesboard.tk",
-		"version"		=> "1.1",
+		"version"		=> "1.2",
 		"guid" 			=> "807812530461f05f83ac7992a83c0b41",
 		"compatibility" => "16*"
 	);
@@ -81,6 +81,12 @@ function mybot_install()
 	          	"description" => "Please insert the UID of the user who should be the bot",
 		        "optionscode" => "text",
 		        "value" => "0",
+	          ),
+	      	"selfreact" => array(
+	          	"title" => "React on himself?",
+	          	"description" => "Should the bot react on his posts when someone is logged in with this user?<br />This doesn't end in a loop!",
+		        "optionscode" => "yesno",
+		        "value" => "no",
 	          ),
 	      	"react" => array(
 	          	"title" => "What should the bot do when a new user registers?",
@@ -563,12 +569,35 @@ function mybot_report($post, $botname, $reason)
 	}
 }
 
+function mybot_string_in_message($string, $message, $subject, $reverse)
+{
+	$strings = explode("\n", $string);
+	$found = false;
+	$all = true;
+	$length = sizeOf($strings);
+	foreach($strings as $key => $string) {
+		if($key+1 != $length)
+		    $string = substr($string, 0, -1);
+		if($reverse) {
+			if($string != "" && (strpos(strtolower($message), strtolower($string)) === false && strpos(strtolower($subject), strtolower($string)) === false))
+			    $all = false;			
+		} else {
+			if($string != "" && (strpos(strtolower($message), strtolower($string)) !== false || strpos(strtolower($subject), strtolower($string)) !== false))
+			    $found = true;
+		}
+	}
+	if($reverse)
+		return !$all;
+
+	return $found;
+}
+
 function mybot_work($info, $type)
 {
 	global $PL, $db, $mybb, $groupscache;
 	
 	//We don't want the bot reacting on himself...
-	if($info['uid'] == $mybb->settings['mybot_user'])
+	if(!isset($mybb->settings['mybot_selfreact']) || ($mybb->settings['mybot_selfreact'] == "no" && $info['uid'] == $mybb->settings['mybot_user']))
 	    return;
 	
     require_once MYBB_ROOT."inc/datahandlers/post.php";
@@ -606,18 +635,8 @@ function mybot_work($info, $type)
 		if(array_key_exists("forum", $rule['conditions']) && !@in_array($info['fid'], $rule['conditions']['forum'])) {
 		    continue;
 		}
-		if(array_key_exists("string", $rule['conditions'])) {
-			$strings = explode("\n", $rule['conditions']['string']);
-			$found = false;
-			$length = sizeOf($strings);
-			foreach($strings as $key => $string) {
-				if($key+1 != $length)
-				    $string = substr($string, 0, -1);
-				if($string != "" && strpos(strtolower($info['message']), strtolower($string)) !== false)
-				    $found = true;
-			}
-			if(!$found)
-			    continue;
+		if(array_key_exists("string", $rule['conditions']) && !mybot_string_in_message($rule['conditions']['string'], $info['message'], $info['subject'], $rule['conditions']['string_reverse'])) {
+			continue;
 		}
 		if(array_key_exists("postlimit", $rule['conditions']) && $thread['replies'] > $rule['conditions']['postlimit']) {
 		    continue;

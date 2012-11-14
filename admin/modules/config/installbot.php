@@ -12,11 +12,13 @@ $userarray = array(-1=>$lang->mybot_create_user); $grouparray = array(-1=>$lang-
 $query = $db->simple_select("users", "uid, username");
 while($user = $db->fetch_array($query))
     $userarray[$user['uid']] = $user['username'];
+uasort($userarray, "sort_user");
 
 foreach($groupscache as $group) {
     if($group['gid']!=1)
 	    $grouparray[$group['gid']] = $group['title'];
 }
+uasort($grouparray, "sort_group");
 
 $page->add_breadcrumb_item($lang->mybot_installing, "index.php?module=config-installbot");
 $page->output_header($lang->mybot_installing);
@@ -184,4 +186,25 @@ if($mybb->input['action']=="do_add") {
 	</script>';
 }
 $page->output_footer();
+
+function sort_user($a, $b)
+{
+	global $lang;
+	if($a == $lang->mybot_create_user)
+	    return -1;
+	if($b == $lang->mybot_create_user)
+	    return 1;
+
+	return strcoll($a, $b);
+}
+function sort_group($a, $b)
+{
+	global $lang;
+	if($a == $lang->mybot_create_group)
+	    return -1;
+	if($b == $lang->mybot_create_group)
+	    return 1;
+
+	return strcoll($a, $b);
+}
 ?>
