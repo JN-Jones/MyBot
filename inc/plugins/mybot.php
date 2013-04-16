@@ -36,9 +36,9 @@ function mybot_info()
 	return array(
 		"name"			=> "MyBot",
 		"description"	=> "Adds a simple Bot to your MyBB{$donate}",
-		"website"		=> "http://jonesboard.tk",
+		"website"		=> "http://jonesboard.de",
 		"author"		=> "Jones",
-		"authorsite"	=> "http://jonesboard.tk",
+		"authorsite"	=> "http://jonesboard.de",
 		"version"		=> "1.2",
 		"guid" 			=> "807812530461f05f83ac7992a83c0b41",
 		"compatibility" => "16*"
