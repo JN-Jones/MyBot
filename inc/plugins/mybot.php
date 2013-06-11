@@ -601,6 +601,10 @@ function mybot_work($info, $type)
 	if(!isset($mybb->settings['mybot_selfreact']) || ($mybb->settings['mybot_selfreact'] == "no" && $info['uid'] == $mybb->settings['mybot_user']))
 	    return;
 	
+	//It's difficult to react on a post which isn't visible so we do nothing here
+	if($info['visible'] != 1)
+	    return;
+	
     require_once MYBB_ROOT."inc/datahandlers/post.php";
  	$posthandler = new PostDataHandler("insert");
 	require_once MYBB_ROOT."inc/class_moderation.php";
@@ -649,13 +653,14 @@ function mybot_work($info, $type)
 		if(array_key_exists("answer", $rule['actions'])) {
             $subject = preg_replace('#RE:\s?#i', '', $info['subject']);
             $subject = "RE: ".$subject;
+            
 	        // Set the post data that came from the input to the $post array.
 	        $post = array(
 	        	"tid" => $info['tid'],
 	            "replyto" => $pid,
 	            "fid" => $info['fid'],
 	            "subject" => $subject,
-	            "icon" => "",
+	            "icon" => $info['icon'],
 	            "uid" => $mybb->settings['mybot_user'],
 	            "username" => $additional['botname'],
 	            "message" => mybot_parser($rule['actions']['answer'], "thread", $additional),
