@@ -33,13 +33,14 @@ function mybot_info()
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <img alt="" border="0" src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1">
 </form></div>';
+
 	return array(
 		"name"			=> "MyBot",
-		"description"	=> "Adds a simple Bot to your MyBB{$donate}",
+		"description"	=> "Adds a (simple) Bot to your MyBB{$donate}",
 		"website"		=> "http://jonesboard.de",
 		"author"		=> "Jones",
 		"authorsite"	=> "http://jonesboard.de",
-		"version"		=> "1.2",
+		"version"		=> "1.3 Beta 1 Dev 1",
 		"guid" 			=> "807812530461f05f83ac7992a83c0b41",
 		"compatibility" => "16*"
 	);
@@ -609,17 +610,6 @@ function mybot_work($info, $type)
 
 	$rules = mybot_cache_load();
 	$additional['botname'] = $db->fetch_field($db->simple_select("users", "username", "uid='{$mybb->settings['mybot_user']}'"), "username");
-	if($info['uid'] != 0) {
-		$user = $db->simple_select("users", "usergroup, additionalgroups, displaygroup", "uid='{$info['uid']}'");
-		$user = $db->fetch_array($user);
-		if(!$user['displaygroup'])
-		{
-			$user['displaygroup'] = $user['usergroup'];
-		}
-	} else {
-		$user['displaygroup'] = 1;
-	}
-	$usergroup = $groupscache[$user['displaygroup']];
 	$thread = get_thread($info['tid']);
 	++$thread['replies'];
 	if($type == "post")
@@ -629,7 +619,7 @@ function mybot_work($info, $type)
 		if(array_key_exists("user", $rule['conditions']) && !@in_array($info['uid'], $rule['conditions']['user'])) {
 			continue;
 		}
-		if(array_key_exists("group", $rule['conditions']) && !@in_array($usergroup['gid'], $rule['conditions']['group'])) {
+		if(array_key_exists("group", $rule['conditions']) && !$PL->is_member($rule['conditions']['group'], $info['uid'])) {
 		    continue;
 		}
 		if(array_key_exists("forum", $rule['conditions']) && !@in_array($info['fid'], $rule['conditions']['forum'])) {
