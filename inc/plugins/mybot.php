@@ -362,6 +362,8 @@ function mybot_parser($text, $type="", $additional=array()) {
 			$text = str_replace('{thread->forum}', $additional['thread']['forum'], $text);
 			$text = str_replace('{thread->answers}', $additional['thread']['answers'], $text);
 			$text = str_replace('{thread->views}', $additional['thread']['views'], $text);
+
+			$text = str_replace('{foundstring}', $additional['foundstring'], $text);
 		}
 	}
 	return $text;
@@ -572,6 +574,7 @@ function mybot_report($post, $botname, $reason)
 
 function mybot_string_in_message($string, $message, $subject, $reverse)
 {
+	global $additional;
 	$strings = explode("\n", $string);
 	$found = false;
 	$all = true;
@@ -583,8 +586,11 @@ function mybot_string_in_message($string, $message, $subject, $reverse)
 			if($string != "" && (strpos(strtolower($message), strtolower($string)) === false && strpos(strtolower($subject), strtolower($string)) === false))
 			    $all = false;			
 		} else {
-			if($string != "" && (strpos(strtolower($message), strtolower($string)) !== false || strpos(strtolower($subject), strtolower($string)) !== false))
+			if($string != "" && (strpos(strtolower($message), strtolower($string)) !== false || strpos(strtolower($subject), strtolower($string)) !== false)) {
 			    $found = true;
+			    if($additional['foundstring'] == "")
+			        $additional['foundstring'] = $string;
+			}
 		}
 	}
 	if($reverse)
@@ -595,14 +601,14 @@ function mybot_string_in_message($string, $message, $subject, $reverse)
 
 function mybot_work($info, $type)
 {
-	global $PL, $db, $mybb, $groupscache;
+	global $PL, $db, $mybb, $groupscache, $additional;
 	
 	//We don't want the bot reacting on himself...
 	if(!isset($mybb->settings['mybot_selfreact']) || ($mybb->settings['mybot_selfreact'] == "no" && $info['uid'] == $mybb->settings['mybot_user']))
 	    return;
 	
 	//It's difficult to react on a post which isn't visible so we do nothing here
-	if($info['visible'] != 1)
+	if(isset($info['visible']) && $info['visible'] != 1)
 	    return;
 	
     require_once MYBB_ROOT."inc/datahandlers/post.php";

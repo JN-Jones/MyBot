@@ -62,6 +62,7 @@ $l['mybot_doc_thread'] = "All variables for the last post are also available for
 $l['mybot_doc_forum'] = "The forum in which the thread is posted";
 $l['mybot_doc_answers'] = "Number of answers";
 $l['mybot_doc_views'] = "Number of views";
+$l['mybot_doc_foundstring'] = "The first string found, if the corresponding function is used. The order is given here by the ACP";
 
 /* Post as Bot */
 $l['mybot_post_forum'] = "Forum";

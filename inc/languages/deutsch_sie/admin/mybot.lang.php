@@ -62,6 +62,7 @@ $l['mybot_doc_thread'] = "Alle Variablen f√ºr den letzten Beitrag sind ebenso f√
 $l['mybot_doc_forum'] = "Der Name des Forums in welchem das Thema erstellt wurde";
 $l['mybot_doc_answers'] = "Anzahl der Antworten auf das Thema";
 $l['mybot_doc_views'] = "Anzahl der Aufrufe des Themas";
+$l['mybot_doc_foundstring'] = "Die erste gefundene Zeichenkette, sofern die entsprechende Funktion genutzt wird. Die Reihenfolge wird dabei vom ACP vorgegeben";
 
 /* Post as Bot */
 $l['mybot_post_forum'] = "Forum";

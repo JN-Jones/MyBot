@@ -819,6 +819,10 @@ if($mybb->input['action']=="add") {
 	$table->construct_cell($lang->mybot_doc_views);
 	$table->construct_row();
 
+	$table->construct_cell("{foundstring}");
+	$table->construct_cell($lang->mybot_doc_foundstring);
+	$table->construct_row();
+
 	$table->output($lang->mybot_thread);
 } elseif($mybb->input['action']=="cache") {
 	mybot_cache_update();
