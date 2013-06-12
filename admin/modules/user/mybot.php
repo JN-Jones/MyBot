@@ -766,6 +766,20 @@ if($mybb->input['action']=="add") {
 	$table->construct_header($lang->mybot_variable, array("width"=>"15%"));
 	$table->construct_header($lang->mybot_description);
 
+	$table->construct_cell("{birthday}");
+	$table->construct_cell($lang->mybot_doc_birthday);
+	$table->construct_row();
+	$table->construct_cell("{bid}");
+	$table->construct_cell($lang->mybot_doc_bid);
+	$table->construct_row();
+
+	$table->output($lang->mybot_birthday);
+
+
+	$table = new Table;
+	$table->construct_header($lang->mybot_variable, array("width"=>"15%"));
+	$table->construct_header($lang->mybot_description);
+
 	$table->construct_cell("{lastpost->user}");
 	$table->construct_cell($lang->mybot_doc_user);
 	$table->construct_row();

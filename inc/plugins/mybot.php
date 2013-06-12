@@ -15,6 +15,10 @@ $plugins->add_hook("admin_config_plugins_activate_commit", "mybot_installed");
 $plugins->add_hook("member_do_register_end", "mybot_register");
 $plugins->add_hook("newthread_do_newthread_end", "mybot_thread");
 $plugins->add_hook("newreply_do_newreply_end", "mybot_post");
+$plugins->add_hook("global_end", "mybot_birthday");
+
+if($mybb->input['module'] == "config-settings" && $mybb->input['action'] == "change")
+	$plugins->add_hook("admin_page_output_footer", "mybot_peeker");
 
 if(is_array($pluginlist['active']) && in_array("myplugins", $pluginlist['active'])) {
 	$plugins->add_hook("myplugins_actions", "mybot_myplugins_actions");
@@ -40,7 +44,7 @@ function mybot_info()
 		"website"		=> "http://jonesboard.de",
 		"author"		=> "Jones",
 		"authorsite"	=> "http://jonesboard.de",
-		"version"		=> "1.3 Beta 1 Dev 1",
+		"version"		=> "1.3 Beta 2",
 		"guid" 			=> "807812530461f05f83ac7992a83c0b41",
 		"compatibility" => "16*"
 	);
@@ -115,7 +119,7 @@ Best regards,
 {botname}",
 	          ),
 	      	"react_post_forum" => array(
-	          	"title" => "Welcom forum",
+	          	"title" => "Welcome forum",
 	          	"description" => "Which forum should be used by the bot to post in?",
 		        "optionscode" => "text",
 		        "value" => "0",
@@ -133,6 +137,54 @@ Best regards,
 		        "value" => "Hi {registered},
 
 welcome on {boardname}
+
+Best regards,
+{botname}",
+	          ),
+	      	"bday" => array(
+	          	"title" => "What should the bot do when a user has birthday?",
+		        "optionscode" => "select
+none=Nothing
+pm=Send a PM
+post=Create a thread",
+		        "value" => "none",
+	          ),
+	      	"bday_pm_subject" => array(
+	          	"title" => "Subject (PM)",
+	          	"description" => "See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+		        "optionscode" => "text",
+		        "value" => "Happy Birthday {birthday}",
+	          ),
+	      	"bday_pm" => array(
+	          	"title" => "Message (PM)",
+	          	"description" => "See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+		        "optionscode" => "textarea",
+		        "value" => "Hi {birthday},
+
+we wish you a Happy Birthday!
+
+Best regards,
+{botname}",
+	          ),
+	      	"bday_post_forum" => array(
+	          	"title" => "Congratulation forum",
+	          	"description" => "Which forum should be used by the bot to post in?",
+		        "optionscode" => "text",
+		        "value" => "0",
+	          ),
+	      	"bday_post_subject" => array(
+	          	"title" => "Subject (Thread)",
+	          	"description" => "See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+		        "optionscode" => "text",
+		        "value" => "Happy Birthday {birthday}",
+	          ),
+	      	"bday_post_text" => array(
+	          	"title" => "Message (Thread)",
+	          	"description" => "See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+		        "optionscode" => "textarea",
+		        "value" => "Hi {birthday},
+
+we wish you a Happy Birthday!
 
 Best regards,
 {botname}",
@@ -230,19 +282,50 @@ function mybot_admin_user_permissions($admin_permissions)
 	return $admin_permissions;
 }
 
+function mybot_peeker()
+{
+		echo '<script type="text/javascript">
+		Event.observe(window, "load", function() {
+			loadMyBotPeekers();			
+		});
+		function loadMyBotPeekers()
+		{
+			new Peeker($("setting_mybot_react"), $("row_setting_mybot_react_pm_subject"), /pm/, false);
+			new Peeker($("setting_mybot_react"), $("row_setting_mybot_react_pm"), /pm/, false);
+			new Peeker($("setting_mybot_react"), $("row_setting_mybot_react_post_forum"), /post/, false);
+			new Peeker($("setting_mybot_react"), $("row_setting_mybot_react_post_subject"), /post/, false);
+			new Peeker($("setting_mybot_react"), $("row_setting_mybot_react_post_text"), /post/, false);
+
+			new Peeker($("setting_mybot_bday"), $("row_setting_mybot_bday_pm_subject"), /pm/, false);
+			new Peeker($("setting_mybot_bday"), $("row_setting_mybot_bday_pm"), /pm/, false);
+			new Peeker($("setting_mybot_bday"), $("row_setting_mybot_bday_post_forum"), /post/, false);
+			new Peeker($("setting_mybot_bday"), $("row_setting_mybot_bday_post_subject"), /post/, false);
+			new Peeker($("setting_mybot_bday"), $("row_setting_mybot_bday_post_text"), /post/, false);
+		}
+	</script>';
+}
+
 function mybot_parser($text, $type="", $additional=array()) {
 	global $mybb, $db;
-	if(!isset($additional['botname']))
+
+   	if(!isset($additional['botname']))
    		$additional['botname'] = $db->fetch_field($db->simple_select("users", "username", "uid='{$mybb->settings['mybot_user']}'"), "username");
 	$text = str_replace('{boardname}', $mybb->settings['bbname'], $text);
 	$text = str_replace('{botname}', $additional['botname'], $text);
-	if($type=="register") {
+	if($type == "register") {
 		if(isset($additional['registered']))
 			$text = str_replace('{registered}', $additional['registered'], $text);
 		if(isset($additional['regid']))
 			$text = str_replace('{regid}', $additional['regid'], $text);
 	}
-	if($type=="thread") {
+	if($type == "birthday") {
+		if(isset($additional['birthday']))
+			$text = str_replace('{birthday}', $additional['birthday'], $text);
+		if(isset($additional['bid']))
+			$text = str_replace('{bid}', $additional['bid'], $text);
+		
+	}
+	if($type == "thread") {
 		//We can only replace something if we had a pid
 		if(isset($additional['pid'])) {
 			//If no tid is set get it
@@ -428,6 +511,126 @@ function mybot_register()
 		}
 	} else
 		return;
+}
+
+function mybot_birthday()
+{
+	global $PL, $mybb, $db;
+    $PL or require_once PLUGINLIBRARY;
+
+	if(!isset($mybb->settings['mybot_bday']) || $mybb->settings['mybot_bday'] == "none") // We use an old version of MyBot
+	    return;
+
+	$last_run = $PL->cache_read("mybot_birthday");
+	if($last_run !== false) {
+		$last['date'] = date("j", $last_run);
+		$last['month'] = date("n", $last_run);
+		$last['year'] = date("Y", $last_run);
+
+		$now['date'] = date("j");
+		$now['month'] = date("n");
+		$now['year'] = date("Y");
+
+		//Is it time?
+		$diff = array_diff_assoc($last, $now);
+
+		if(count($diff) == 0)
+		    //Nothing to do
+			return;
+
+		$run = true;
+		$time = $last_run;
+		$todo = array();
+		while($run) {
+			$time = $time + 24*3600;
+			$this['date'] = date("j", $time);
+			$this['month'] = date("n", $time);
+			$this['year'] = date("Y", $time);
+
+			if(count(array_diff_assoc($this, $now)) == 0)
+				//we are ready
+				$run = false;
+
+			$todo[] = $this;
+		}
+	} else {
+		//Just run the bdays from today
+		$todo[] = array("date" => date("j"), "month" => date("n"), "year" => date("Y"));
+	}
+
+	$add = "";
+	if($mybb->settings['mybot_bday'] == "post")
+	    $add = "AND birthdayprivacy = 'all'";
+
+    foreach ($todo as $day) {
+		$db_bday = $day['date']."-".$day['month']."-%";
+		$query = $db->simple_select("users", "uid, username", "birthday LIKE '{$db_bday}'{$add}");
+
+		while($user = $db->fetch_array($query)) {
+			mybot_birthday_write($user['uid'], $user['username']);
+		}
+	}
+
+	$PL->cache_update("mybot_birthday", time());
+}
+
+function mybot_birthday_write($uid, $username)
+{
+	global $mybb;
+	$additional['birthday'] = $username;
+	$additional['bid'] = $uid;
+	if($mybb->settings['mybot_bday'] == "pm") {
+		$message = mybot_parser($mybb->settings['mybot_bday_pm'], "birthday", $additional);
+		$subject = mybot_parser($mybb->settings['mybot_bday_pm_subject'], "birthday", $additional);
+		//Write PM
+		require_once MYBB_ROOT."inc/datahandlers/pm.php";
+		$pmhandler = new PMDataHandler();
+
+		$pm = array(
+			"subject" => $subject,
+			"message" => $message,
+			"icon" => "",
+			"fromid" => $mybb->settings['mybot_user'],
+			"do" => "",
+			"pmid" => "",
+		);
+		$pm['toid'][] = $uid;
+		$pmhandler->set_data($pm);
+
+		// Now let the pm handler do all the hard work.
+		if($pmhandler->validate_pm())
+		{
+			$pminfo = $pmhandler->insert_pm();
+		}else {
+			$pm_errors = $pmhandler->get_friendly_errors();
+			$send_errors = inline_error($pm_errors);
+			echo $send_errors;
+		}
+	} elseif($mybb->settings['mybot_bday'] == "post") {
+		//Write Post
+		$message = mybot_parser($mybb->settings['mybot_bday_post_text'], "birthday", $additional);
+		$subject = mybot_parser($mybb->settings['mybot_bday_post_subject'], "birthday", $additional);
+        require_once  MYBB_ROOT."inc/datahandlers/post.php";
+        $posthandler = new PostDataHandler("insert");
+        $posthandler->action = "thread";
+
+        // Set the thread data that came from the input to the $thread array.
+        $new_thread = array(
+        	"fid" => $mybb->settings['mybot_bday_post_forum'],
+            "subject" => $subject,
+            "prefix" => "",
+            "icon" => "",
+            "uid" => $mybb->settings['mybot_user'],
+            "username" => $additional['botname'],
+            "message" => $message,
+            "ipaddress" => get_ip()
+        );
+        $posthandler->set_data($new_thread);
+        $valid_thread = $posthandler->validate_thread();
+		if($valid_thread) {
+	        $posthandler->insert_thread();
+		}
+	}
 }
 
 function mybot_cache_update($load = true, $rules = array())
