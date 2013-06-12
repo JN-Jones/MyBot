@@ -103,6 +103,7 @@ $l['mybot_add_action_report'] = "Beitrag melden";
 $l['mybot_add_action_approve'] = "Thema zustimmen/ablehnen";
 $l['mybot_add_action_pm'] = "Private Nachricht schicken";
 $l['mybot_add_action_not'] = "Bitte wähle mindestens eine Aktion";
+$l['thread_creator'] = "Thread Ersteller";
 $l['mybot_add_user'] = "User";
 $l['mybot_add_user_desc'] = "Auf welchen User soll der Bot reagieren?";
 $l['mybot_add_user_not'] = "Bitte wähle einen User aus";

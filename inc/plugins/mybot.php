@@ -626,8 +626,15 @@ function mybot_work($info, $type)
 		++$thread['replies'];
 	$active = array();
 	foreach($rules as $rule) {
-		if(array_key_exists("user", $rule['conditions']) && !@in_array($info['uid'], $rule['conditions']['user'])) {
-			continue;
+		if(array_key_exists("user", $rule['conditions'])) {
+			$continue = true;
+			if(@in_array(-1, $rule['conditions']['user']) && $thread['uid'] == $info['uid'])
+				$continue = false;
+			if(@in_array($info['uid'], $rule['conditions']['user']))
+			    $continue = false;
+			
+			if($continue)
+			    continue;
 		}
 		if(array_key_exists("group", $rule['conditions']) && !$PL->is_member($rule['conditions']['group'], $info['uid'])) {
 		    continue;

@@ -103,6 +103,7 @@ $l['mybot_add_action_report'] = "Report post";
 $l['mybot_add_action_approve'] = "(Un)approve thread";
 $l['mybot_add_action_pm'] = "Send PM";
 $l['mybot_add_action_not'] = "Please select at least one action";
+$l['thread_creator'] = "Thread Opener";
 $l['mybot_add_user'] = "User";
 $l['mybot_add_user_desc'] = "On what user should the bot react?";
 $l['mybot_add_user_not'] = "Please select a user";

@@ -157,9 +157,10 @@ if($mybb->input['action']=="add") {
 			$page->output_inline_error($errors);
 		}
 		$query = $db->simple_select("users", "uid, username");
+		$userarray[-1] = $lang->thread_creator;
 		while($user = $db->fetch_array($query))
 		    $userarray[$user['uid']] = $user['username'];
-		asort($userarray);
+		uasort($userarray, "sort_user");
 
 		$form = new Form("index.php?module=".MODULE."&amp;action=add", "post");
 		$form_container = new FormContainer($lang->mybot_addrule);
@@ -500,9 +501,10 @@ if($mybb->input['action']=="add") {
 			$page->output_inline_error($errors);
 		}
 		$query = $db->simple_select("users", "uid, username");
+		$userarray[-1] = $lang->thread_creator;
 		while($user = $db->fetch_array($query))
 		    $userarray[$user['uid']] = $user['username'];
-		asort($userarray);
+		uasort($userarray, "sort_user");
 
 		$form = new Form("index.php?module=".MODULE."&amp;action=edit", "post");
 		$form_container = new FormContainer($lang->mybot_addrule);
@@ -937,5 +939,16 @@ function generate_tabs($selected)
 	);
 
 	$page->output_nav_tabs($sub_tabs, $selected);
+}
+
+function sort_user($a, $b)
+{
+	global $lang;
+	if($a == $lang->thread_creator)
+	    return -1;
+	if($b == $lang->thread_creator)
+	    return 1;
+
+	return strcoll($a, $b);
 }
 ?>
