@@ -17,6 +17,7 @@ $plugins->add_hook("newthread_do_newthread_end", "mybot_thread");
 $plugins->add_hook("newreply_do_newreply_end", "mybot_post");
 $plugins->add_hook("global_end", "mybot_birthday");
 
+global $mybb;
 if($mybb->input['module'] == "config-settings" && $mybb->input['action'] == "change")
 	$plugins->add_hook("admin_page_output_footer", "mybot_peeker");
 
@@ -44,7 +45,7 @@ function mybot_info()
 		"website"		=> "http://jonesboard.de",
 		"author"		=> "Jones",
 		"authorsite"	=> "http://jonesboard.de",
-		"version"		=> "1.3 Beta 2",
+		"version"		=> "1.3",
 		"guid" 			=> "807812530461f05f83ac7992a83c0b41",
 		"compatibility" => "16*"
 	);
