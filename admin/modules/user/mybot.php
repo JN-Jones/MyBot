@@ -6,9 +6,9 @@ if(!defined("IN_MYBB"))
 }
 
 if(function_exists("myplugins_info"))
-    define(MODULE, "myplugins-mybot");
+	define(MODULE, "myplugins-mybot");
 else
-    define(MODULE, "user-mybot");
+	define(MODULE, "user-mybot");
 
 $PL or require_once PLUGINLIBRARY;
 $lang->load("mybot");
@@ -31,22 +31,22 @@ if($mybb->input['action']=="add") {
 			if(in_Array("user", $mybb->input['conditions']) && !$mybb->input['user'])
 				$errors[] = $lang->mybot_add_user_not;
 
-	    	if(in_Array("group", $mybb->input['conditions']) && !$mybb->input['group'])
+			if(in_Array("group", $mybb->input['conditions']) && !$mybb->input['group'])
 				$errors[] = $lang->mybot_add_group_not;
 
-	       	if(in_Array("forum", $mybb->input['conditions']) && !$mybb->input['forum'])
+			if(in_Array("forum", $mybb->input['conditions']) && !$mybb->input['forum'])
 				$errors[] = $lang->mybot_add_forum_not;
 
-	       	if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string'])))
+			if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string'])))
 				$errors[] = $lang->mybot_add_string_not;
 
-	       	if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string_reverse'])))
+			if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string_reverse'])))
 				$errors[] = $lang->mybot_add_string_reverse_not;
 
-   	       	if(in_Array("postlimit", $mybb->input['conditions']) && !strlen(trim($mybb->input['postlimit'])))
+			if(in_Array("postlimit", $mybb->input['conditions']) && !strlen(trim($mybb->input['postlimit'])))
 				$errors[] = $lang->mybot_add_postlimit_not;
 
-    	    if(in_Array("prefix", $mybb->input['conditions']) && !$mybb->input['prefix'])
+			if(in_Array("prefix", $mybb->input['conditions']) && !$mybb->input['prefix'])
 				$errors[] = $lang->mybot_add_prefix_not;
 		}
 
@@ -73,7 +73,7 @@ if($mybb->input['action']=="add") {
 				if(!$mybb->input['pm'])
 					$errors[] = $lang->mybot_add_pm_not;
 
-    			if($mybb->input['pm'] == "other" && !strlen(trim($mybb->input['pm_user'])))
+				if($mybb->input['pm'] == "other" && !strlen(trim($mybb->input['pm_user'])))
 					$errors[] = $lang->mybot_add_pm_user_not;
 
 				if(!strlen(trim($mybb->input['subject'])))
@@ -86,53 +86,53 @@ if($mybb->input['action']=="add") {
 
 		if(!$errors) {
 			if(in_Array("user", $mybb->input['conditions']))
-			    $conditions['user'] = $mybb->input['user'];
+				$conditions['user'] = $mybb->input['user'];
 
-	    	if(in_Array("group", $mybb->input['conditions']))
-			    $conditions['group'] = $mybb->input['group'];
+			if(in_Array("group", $mybb->input['conditions']))
+				$conditions['group'] = $mybb->input['group'];
 
-	       	if(in_Array("forum", $mybb->input['conditions']))
-			    $conditions['forum'] = $mybb->input['forum'];
+			if(in_Array("forum", $mybb->input['conditions']))
+				$conditions['forum'] = $mybb->input['forum'];
 
-	       	if(in_Array("string", $mybb->input['conditions'])) {
-			    $conditions['string'] = $mybb->input['string'];
-			    $conditions['string_reverse'] = $mybb->input['string_reverse'];
+			if(in_Array("string", $mybb->input['conditions'])) {
+				$conditions['string'] = $mybb->input['string'];
+				$conditions['string_reverse'] = $mybb->input['string_reverse'];
 			}
 
-   			if(in_Array("postlimit", $mybb->input['conditions']))
-			    $conditions['postlimit'] = $mybb->input['postlimit'];
+			if(in_Array("postlimit", $mybb->input['conditions']))
+				$conditions['postlimit'] = $mybb->input['postlimit'];
 
 			if(in_Array("prefix", $mybb->input['conditions']))
-			    $conditions['prefix'] = $mybb->input['prefix'];
+				$conditions['prefix'] = $mybb->input['prefix'];
 
-   
-  			if(in_Array("answer", $mybb->input['actions']))
-			    $actions['answer'] = $mybb->input['answer'];
+
+			if(in_Array("answer", $mybb->input['actions']))
+				$actions['answer'] = $mybb->input['answer'];
 
 			if(in_Array("move", $mybb->input['actions']))
-			    $actions['move'] = $mybb->input['move'];
+				$actions['move'] = $mybb->input['move'];
 
 			if(in_Array("delete", $mybb->input['actions']))
-			    $actions['delete'] = $mybb->input['delete'];
+				$actions['delete'] = $mybb->input['delete'];
 
 			if(in_Array("stick", $mybb->input['actions']))
-			    $actions['stick'] = true;
+				$actions['stick'] = true;
 
 			if(in_Array("close", $mybb->input['actions']))
-			    $actions['close'] = true;
+				$actions['close'] = true;
 
 			if(in_Array("report", $mybb->input['actions']))
-			    $actions['report'] = $mybb->input['report'];
+				$actions['report'] = $mybb->input['report'];
 
 			if(in_Array("approve", $mybb->input['actions']))
-			    $actions['approve'] = $mybb->input['approve'];
+				$actions['approve'] = $mybb->input['approve'];
 
 			if(in_Array("pm", $mybb->input['actions'])) {
-			    $actions['pm']['user'] = $mybb->input['pm'];
-    			if($mybb->input['pm'] == "other")
-			    	$actions['pm']['user'] = $mybb->input['pm_user'];
-			    $actions['pm']['subject'] = $mybb->input['subject'];
-			    $actions['pm']['message'] = $mybb->input['message'];
+				$actions['pm']['user'] = $mybb->input['pm'];
+				if($mybb->input['pm'] == "other")
+					$actions['pm']['user'] = $mybb->input['pm_user'];
+				$actions['pm']['subject'] = $mybb->input['subject'];
+				$actions['pm']['message'] = $mybb->input['message'];
 			}
 
 			$rules = mybot_cache_load();
@@ -159,7 +159,7 @@ if($mybb->input['action']=="add") {
 		$query = $db->simple_select("users", "uid, username");
 		$userarray[-1] = $lang->thread_creator;
 		while($user = $db->fetch_array($query))
-		    $userarray[$user['uid']] = $user['username'];
+			$userarray[$user['uid']] = $user['username'];
 		uasort($userarray, "sort_user");
 
 		$form = new Form("index.php?module=".MODULE."&amp;action=add", "post");
@@ -198,10 +198,10 @@ if($mybb->input['action']=="add") {
 
 		$prefixes = build_prefixes();
 		if(!$prefixes)
-		    $prefixes = array();
+			$prefixes = array();
 		$pr = array();
 		foreach($prefixes as $prefix)
-		    $pr[$prefix['pid']] = $prefix['prefix'];
+			$pr[$prefix['pid']] = $prefix['prefix'];
 		$add_prefixes = $form->generate_select_box("prefix[]", $pr, $mybb->input['prefix'], array("multiple"=>true));
 		$form_container->output_row($lang->mybot_add_prefix, $lang->mybot_add_prefix_desc, $add_prefixes, '', array(), array('id' => 'prefix'));
 
@@ -259,29 +259,25 @@ if($mybb->input['action']=="add") {
 
 		echo '<script type="text/javascript" src="./jscripts/mybot_peeker.js"></script>
 		<script type="text/javascript">
-			Event.observe(window, "load", function() {
-				loadPeekers();
-			});
-			function loadPeekers()
-			{
-				new Peeker($("conditions"), $("user"), /user/, false);
-				new Peeker($("conditions"), $("group"), /group/, false);
-				new Peeker($("conditions"), $("forum"), /forum/, false);
-				new Peeker($("conditions"), $("string"), /string/, false);
-				new Peeker($("conditions"), $("string_reverse"), /string/, false);
-				new Peeker($("conditions"), $("postlimit"), /postlimit/, false);
-				new Peeker($("conditions"), $("prefix"), /prefix/, false);
-				new Peeker($("action"), $("answer"), /answer/, false);
-				new Peeker($("action"), $("move"), /move/, false);
-				new Peeker($("action"), $("delete"), /delete/, false);
-				new Peeker($("action"), $("report"), /report/, false);
-				new Peeker($("action"), $("approve"), /approve/, false);
-				new Peeker($("action"), $("pm"), /pm/, false);
-				new Peeker($("action"), $("subject"), /pm/, false);
-				new Peeker($("action"), $("message"), /pm/, false);
+			$(document).ready(function() {
+				new Peeker($("#conditions"), $("#user"), /user/);
+				new Peeker($("#conditions"), $("#group"), /group/);
+				new Peeker($("#conditions"), $("#forum"), /forum/);
+				new Peeker($("#conditions"), $("#string"), /string/);
+				new Peeker($("#conditions"), $("#string_reverse"), /string/);
+				new Peeker($("#conditions"), $("#postlimit"), /postlimit/);
+				new Peeker($("#conditions"), $("#prefix"), /prefix/);
+				new Peeker($("#action"), $("#answer"), /answer/);
+				new Peeker($("#action"), $("#move"), /move/);
+				new Peeker($("#action"), $("#delete"), /delete/);
+				new Peeker($("#action"), $("#report"), /report/);
+				new Peeker($("#action"), $("#approve"), /approve/);
+				new Peeker($("#action"), $("#pm"), /pm/);
+				new Peeker($("#action"), $("#subject"), /pm/);
+				new Peeker($("#action"), $("#message"), /pm/);
 
-				new Peeker($("pm_select"), $("pm_user"), /other/, false);
-			}
+				new Peeker($("#pm_select"), $("#pm_user"), /other/, false);
+			});
 		</script>';
 	}
 } elseif($mybb->input['action']=="edit") {
@@ -302,22 +298,22 @@ if($mybb->input['action']=="add") {
 			if(in_Array("user", $mybb->input['conditions']) && !$mybb->input['user'])
 				$errors[] = $lang->mybot_add_user_not;
 
-	    	if(in_Array("group", $mybb->input['conditions']) && !$mybb->input['group'])
+			if(in_Array("group", $mybb->input['conditions']) && !$mybb->input['group'])
 				$errors[] = $lang->mybot_add_group_not;
 
-	       	if(in_Array("forum", $mybb->input['conditions']) && !$mybb->input['forum'])
+			if(in_Array("forum", $mybb->input['conditions']) && !$mybb->input['forum'])
 				$errors[] = $lang->mybot_add_forum_not;
 
-	       	if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string'])))
+			if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string'])))
 				$errors[] = $lang->mybot_add_string_not;
 
-	       	if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string_reverse'])))
+			if(in_Array("string", $mybb->input['conditions']) && !strlen(trim($mybb->input['string_reverse'])))
 				$errors[] = $lang->mybot_add_string_reverse_not;
 
-   	       	if(in_Array("postlimit", $mybb->input['conditions']) && !strlen(trim($mybb->input['postlimit'])))
+			if(in_Array("postlimit", $mybb->input['conditions']) && !strlen(trim($mybb->input['postlimit'])))
 				$errors[] = $lang->mybot_add_postlimit_not;
 
-	       	if(in_Array("prefix", $mybb->input['conditions']) && !$mybb->input['prefix'])
+			if(in_Array("prefix", $mybb->input['conditions']) && !$mybb->input['prefix'])
 				$errors[] = $lang->mybot_add_prefix_not;
 		}
 
@@ -333,7 +329,7 @@ if($mybb->input['action']=="add") {
 			elseif(in_Array("move", $mybb->input['actions'])) {
 				$forum = get_forum($mybb->input['move']);
 				if(!$forum || $forum['type'] != "f" || $forum['type'] == "f" && $forum['linkto'] != '')
-				    $errors[] = $lang->mybot_add_move_invalid;
+					$errors[] = $lang->mybot_add_move_invalid;
 			}
 
 			if(in_Array("delete", $mybb->input['actions']) && !strlen(trim($mybb->input['delete'])))
@@ -349,7 +345,7 @@ if($mybb->input['action']=="add") {
 				if(!$mybb->input['pm'])
 					$errors[] = $lang->mybot_add_pm_not;
 
-    			if($mybb->input['pm'] == "other" && !strlen(trim($mybb->input['pm_user'])))
+				if($mybb->input['pm'] == "other" && !strlen(trim($mybb->input['pm_user'])))
 					$errors[] = $lang->mybot_add_pm_user_not;
 
 				if(!strlen(trim($mybb->input['subject'])))
@@ -362,53 +358,53 @@ if($mybb->input['action']=="add") {
 
 		if(!$errors) {
 			if(in_Array("user", $mybb->input['conditions']))
-			    $conditions['user'] = $mybb->input['user'];
+				$conditions['user'] = $mybb->input['user'];
 
-	    	if(in_Array("group", $mybb->input['conditions']))
-			    $conditions['group'] = $mybb->input['group'];
+			if(in_Array("group", $mybb->input['conditions']))
+				$conditions['group'] = $mybb->input['group'];
 
-	       	if(in_Array("forum", $mybb->input['conditions']))
-			    $conditions['forum'] = $mybb->input['forum'];
+			if(in_Array("forum", $mybb->input['conditions']))
+				$conditions['forum'] = $mybb->input['forum'];
 
-	       	if(in_Array("string", $mybb->input['conditions'])) {
-			    $conditions['string'] = $mybb->input['string'];
-			    $conditions['string_reverse'] = $mybb->input['string_reverse'];
+			if(in_Array("string", $mybb->input['conditions'])) {
+				$conditions['string'] = $mybb->input['string'];
+				$conditions['string_reverse'] = $mybb->input['string_reverse'];
 			}
 
-       		if(in_Array("postlimit", $mybb->input['conditions']))
-			    $conditions['postlimit'] = $mybb->input['postlimit'];
+			if(in_Array("postlimit", $mybb->input['conditions']))
+				$conditions['postlimit'] = $mybb->input['postlimit'];
 
-    		if(in_Array("prefix", $mybb->input['conditions']))
-			    $conditions['prefix'] = $mybb->input['prefix'];
+			if(in_Array("prefix", $mybb->input['conditions']))
+				$conditions['prefix'] = $mybb->input['prefix'];
 
 
 			if(in_Array("answer", $mybb->input['actions']))
-			    $actions['answer'] = $mybb->input['answer'];
+				$actions['answer'] = $mybb->input['answer'];
 
 			if(in_Array("move", $mybb->input['actions']))
-			    $actions['move'] = $mybb->input['move'];
+				$actions['move'] = $mybb->input['move'];
 
 			if(in_Array("delete", $mybb->input['actions']))
-			    $actions['delete'] = $mybb->input['delete'];
+				$actions['delete'] = $mybb->input['delete'];
 
 			if(in_Array("stick", $mybb->input['actions']))
-			    $actions['stick'] = true;
+				$actions['stick'] = true;
 
 			if(in_Array("close", $mybb->input['actions']))
-			    $actions['close'] = true;
+				$actions['close'] = true;
 
 			if(in_Array("report", $mybb->input['actions']))
-			    $actions['report'] = $mybb->input['report'];
+				$actions['report'] = $mybb->input['report'];
 
 			if(in_Array("approve", $mybb->input['actions']))
-			    $actions['approve'] = $mybb->input['approve'];
+				$actions['approve'] = $mybb->input['approve'];
 
 			if(in_Array("pm", $mybb->input['actions'])) {
-			    $actions['pm']['user'] = $mybb->input['pm'];
-    			if($mybb->input['pm'] == "other")
-			    	$actions['pm']['user'] = $mybb->input['pm_user'];
-			    $actions['pm']['subject'] = $mybb->input['subject'];
-			    $actions['pm']['message'] = $mybb->input['message'];
+				$actions['pm']['user'] = $mybb->input['pm'];
+				if($mybb->input['pm'] == "other")
+					$actions['pm']['user'] = $mybb->input['pm_user'];
+				$actions['pm']['subject'] = $mybb->input['subject'];
+				$actions['pm']['message'] = $mybb->input['message'];
 			}
 
 //			$rules = mybot_cache_load();
@@ -437,17 +433,17 @@ if($mybb->input['action']=="add") {
 		if(array_key_exists("group", $rule['conditions']))
 			$conditions[] = "group";
 
-	   	if(array_key_exists("forum", $rule['conditions']))
+		if(array_key_exists("forum", $rule['conditions']))
 			$conditions[] = "forum";
 
-	   	if(array_key_exists("string", $rule['conditions']))
+		if(array_key_exists("string", $rule['conditions']))
 			$conditions[] = "string";
 
 		if(array_key_exists("postlimit", $rule['conditions']))
-		    $conditions[] = "postlimit";
+			$conditions[] = "postlimit";
 
 		if(array_key_exists("prefix", $rule['conditions']))
-		    $conditions[] = "prefix";
+			$conditions[] = "prefix";
 
 
 		if(array_key_exists("answer", $rule['actions']))
@@ -466,16 +462,16 @@ if($mybb->input['action']=="add") {
 			}
 		}
 
-    	if(array_key_exists("stick", $rule['actions']))
+		if(array_key_exists("stick", $rule['actions']))
 			$actions[] = "stick";
 
-    	if(array_key_exists("close", $rule['actions']))
+		if(array_key_exists("close", $rule['actions']))
 			$actions[] = "close";
 
-    	if(array_key_exists("report", $rule['actions']))
+		if(array_key_exists("report", $rule['actions']))
 			$actions[] = "report";
 
-    	if(array_key_exists("approve", $rule['actions']))
+		if(array_key_exists("approve", $rule['actions']))
 			$actions[] = "approve";
 
 
@@ -491,8 +487,8 @@ if($mybb->input['action']=="add") {
 		if(array_key_exists("pm", $rule['actions'])) {
 			$actions[] = "pm";
 			$pm = $rule['actions']['pm']['user'];
-		    if($pm != "last" && $pm != "start")
-		        $pm = "other";
+			if($pm != "last" && $pm != "start")
+				$pm = "other";
 		}
 
 
@@ -503,7 +499,7 @@ if($mybb->input['action']=="add") {
 		$query = $db->simple_select("users", "uid, username");
 		$userarray[-1] = $lang->thread_creator;
 		while($user = $db->fetch_array($query))
-		    $userarray[$user['uid']] = $user['username'];
+			$userarray[$user['uid']] = $user['username'];
 		uasort($userarray, "sort_user");
 
 		$form = new Form("index.php?module=".MODULE."&amp;action=edit", "post");
@@ -542,10 +538,10 @@ if($mybb->input['action']=="add") {
 
 		$prefixes = build_prefixes();
 		if(!$prefixes)
-		    $prefixes = array();
+			$prefixes = array();
 		$pr = array();
 		foreach($prefixes as $prefix)
-		    $pr[$prefix['pid']] = $prefix['prefix'];
+			$pr[$prefix['pid']] = $prefix['prefix'];
 		$add_prefixes = $form->generate_select_box("prefix[]", $pr, $rule['conditions']['prefix'], array("multiple"=>true));
 		$form_container->output_row($lang->mybot_add_prefix, $lang->mybot_add_prefix_desc, $add_prefixes, '', array(), array('id' => 'prefix'));
 
@@ -604,29 +600,25 @@ if($mybb->input['action']=="add") {
 
 		echo '<script type="text/javascript" src="./jscripts/mybot_peeker.js"></script>
 		<script type="text/javascript">
-			Event.observe(window, "load", function() {
-				loadPeekers();
-			});
-			function loadPeekers()
-			{
-				new Peeker($("conditions"), $("user"), /user/, false);
-				new Peeker($("conditions"), $("group"), /group/, false);
-				new Peeker($("conditions"), $("forum"), /forum/, false);
-				new Peeker($("conditions"), $("string"), /string/, false);
-				new Peeker($("conditions"), $("string_reverse"), /string/, false);
-				new Peeker($("conditions"), $("postlimit"), /postlimit/, false);
-				new Peeker($("conditions"), $("prefix"), /prefix/, false);
-				new Peeker($("action"), $("answer"), /answer/, false);
-				new Peeker($("action"), $("move"), /move/, false);
-				new Peeker($("action"), $("delete"), /delete/, false);
-				new Peeker($("action"), $("report"), /report/, false);
-				new Peeker($("action"), $("approve"), /approve/, false);
-				new Peeker($("action"), $("pm"), /pm/, false);
-				new Peeker($("action"), $("subject"), /pm/, false);
-				new Peeker($("action"), $("message"), /pm/, false);
+			$(document).ready(function() {
+				new Peeker($("#conditions"), $("#user"), /user/);
+				new Peeker($("#conditions"), $("#group"), /group/);
+				new Peeker($("#conditions"), $("#forum"), /forum/);
+				new Peeker($("#conditions"), $("#string"), /string/);
+				new Peeker($("#conditions"), $("#string_reverse"), /string/);
+				new Peeker($("#conditions"), $("#postlimit"), /postlimit/);
+				new Peeker($("#conditions"), $("#prefix"), /prefix/);
+				new Peeker($("#action"), $("#answer"), /answer/);
+				new Peeker($("#action"), $("#move"), /move/);
+				new Peeker($("#action"), $("#delete"), /delete/);
+				new Peeker($("#action"), $("#report"), /report/);
+				new Peeker($("#action"), $("#approve"), /approve/);
+				new Peeker($("#action"), $("#pm"), /pm/);
+				new Peeker($("#action"), $("#subject"), /pm/);
+				new Peeker($("#action"), $("#message"), /pm/);
 
-				new Peeker($("pm_select"), $("pm_user"), /other/, false);
-			}
+				new Peeker($("#pm_select"), $("#pm_user"), /other/);
+			});
 		</script>';
 	}
 } elseif($mybb->input['action']=="delete") {
@@ -678,31 +670,31 @@ if($mybb->input['action']=="add") {
 			flash_message($lang->mybot_post_category, 'error');
 			admin_redirect("index.php?module=".MODULE."&amp;action=post");
 		}
-        $name = $db->fetch_field($db->simple_select("users", "username", "uid='{$mybb->settings['mybot_user']}'"), "username");
+		$name = $db->fetch_field($db->simple_select("users", "username", "uid='{$mybb->settings['mybot_user']}'"), "username");
 		// Set up posthandler.
-        require_once  MYBB_ROOT."inc/datahandlers/post.php";
-        $posthandler = new PostDataHandler("insert");
-        $posthandler->action = "thread";
+		require_once  MYBB_ROOT."inc/datahandlers/post.php";
+		$posthandler = new PostDataHandler("insert");
+		$posthandler->action = "thread";
 
-        // Set the thread data that came from the input to the $thread array.
-        $new_thread = array(
-        	"fid" => $mybb->input['forum'],
-            "subject" => $mybb->input['subject'],
-            "prefix" => "",
-            "icon" => "",
-            "uid" => $mybb->settings['mybot_user'],
-            "username" => $name,
-            "message" => $mybb->input['text'],
-            "ipaddress" => get_ip()
-        );
-        $posthandler->set_data($new_thread);
-        $valid_thread = $posthandler->validate_thread();
+		// Set the thread data that came from the input to the $thread array.
+		$new_thread = array(
+			"fid" => $mybb->input['forum'],
+			"subject" => $mybb->input['subject'],
+			"prefix" => "",
+			"icon" => "",
+			"uid" => $mybb->settings['mybot_user'],
+			"username" => $name,
+			"message" => $mybb->input['text'],
+			"ipaddress" => get_ip()
+		);
+		$posthandler->set_data($new_thread);
+		$valid_thread = $posthandler->validate_thread();
 		// Fetch friendly error messages if this is an invalid thread
 		if(!$valid_thread)
 		{
-	        $errors = $posthandler->get_friendly_errors();
+			$errors = $posthandler->get_friendly_errors();
 		} else {
-	        $posthandler->insert_thread();
+	 		$posthandler->insert_thread();
 			flash_message($lang->mybot_post_inserted, 'success');
 			admin_redirect("index.php?module=".MODULE."&amp;action=post");
 		}
@@ -865,46 +857,46 @@ if($mybb->input['action']=="add") {
 			if(array_key_exists("group", $rule['conditions']))
 				$conditions[] = $lang->mybot_conditions_group;
 	
-		   	if(array_key_exists("forum", $rule['conditions']))
+			if(array_key_exists("forum", $rule['conditions']))
 				$conditions[] = $lang->mybot_conditions_forum;
 	
-		   	if(array_key_exists("string", $rule['conditions']) && $rule['conditions']['string_reverse'])
+			if(array_key_exists("string", $rule['conditions']) && $rule['conditions']['string_reverse'])
 				$conditions[] = $lang->mybot_conditions_string_reverse;
 			elseif(array_key_exists("string", $rule['conditions']))
 				$conditions[] = $lang->mybot_conditions_string;
 
-   		   	if(array_key_exists("postlimit", $rule['conditions']))
+			if(array_key_exists("postlimit", $rule['conditions']))
 				$conditions[] = $lang->sprintf($lang->mybot_conditions_postlimit, $rule['conditions']['postlimit']);
 
-   		   	if(array_key_exists("prefix", $rule['conditions']))
+			if(array_key_exists("prefix", $rule['conditions']))
 				$conditions[] = $lang->mybot_conditions_prefix;
-	
-	
+
+
 			if(array_key_exists("answer", $rule['actions']))
 				$actions[] = $lang->mybot_actions_answer;
-	
+
 			if(array_key_exists("move", $rule['actions']))
 				$actions[] = $lang->mybot_actions_move;
-	
+
 			if(array_key_exists("delete", $rule['actions']))
 				$actions[] = $lang->mybot_actions_delete;
-	
-	    	if(array_key_exists("stick", $rule['actions']))
+
+			if(array_key_exists("stick", $rule['actions']))
 				$actions[] = $lang->mybot_actions_stick;
-	
-	    	if(array_key_exists("close", $rule['actions']))
+
+			if(array_key_exists("close", $rule['actions']))
 				$actions[] = $lang->mybot_actions_close;
-	
-	    	if(array_key_exists("report", $rule['actions']))
+
+			if(array_key_exists("report", $rule['actions']))
 				$actions[] = $lang->mybot_actions_report;
 
-	    	if(array_key_exists("approve", $rule['actions']))
+			if(array_key_exists("approve", $rule['actions']))
 				$actions[] = $lang->mybot_actions_approve;
 
-    		if(array_key_exists("pm", $rule['actions']))
+			if(array_key_exists("pm", $rule['actions']))
 				$actions[] = $lang->mybot_actions_pm;
-	
-	
+
+
 			$table->construct_cell($rule['title']);
 			$table->construct_cell(implode(", ", $conditions));
 			$table->construct_cell(implode(", ", $actions));
@@ -959,9 +951,9 @@ function sort_user($a, $b)
 {
 	global $lang;
 	if($a == $lang->thread_creator)
-	    return -1;
+		return -1;
 	if($b == $lang->thread_creator)
-	    return 1;
+		return 1;
 
 	return strcoll($a, $b);
 }

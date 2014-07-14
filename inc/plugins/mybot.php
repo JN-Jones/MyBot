@@ -5,10 +5,10 @@ if(!defined("IN_MYBB"))
 }
 if(!defined("PLUGINLIBRARY"))
 {
-    define("PLUGINLIBRARY", MYBB_ROOT."inc/plugins/pluginlibrary.php");
+	define("PLUGINLIBRARY", MYBB_ROOT."inc/plugins/pluginlibrary.php");
 }
 if(!isset($pluginlist))
-    $pluginlist = $cache->read("plugins");
+	$pluginlist = $cache->read("plugins");
 
 $plugins->add_hook("admin_config_action_handler", "mybot_admin_config_action_handler");
 $plugins->add_hook("admin_config_plugins_activate_commit", "mybot_installed");
@@ -32,7 +32,7 @@ if(is_array($pluginlist['active']) && in_array("myplugins", $pluginlist['active'
 
 function mybot_info()
 {
-    $donate = '<div style="float: right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+	$donate = '<div style="float: right"><form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
 <input type="hidden" name="hosted_button_id" value="SQLGRVKSDMZHA">
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
@@ -45,9 +45,9 @@ function mybot_info()
 		"website"		=> "http://jonesboard.de",
 		"author"		=> "Jones",
 		"authorsite"	=> "http://jonesboard.de",
-		"version"		=> "1.3",
-		"guid" 			=> "807812530461f05f83ac7992a83c0b41",
-		"compatibility" => "16*"
+		"version"		=> "1.3.1",
+		"guid"			=> "807812530461f05f83ac7992a83c0b41",
+		"compatibility"	=> "17*,18*"
 	);
 }
 
@@ -56,18 +56,18 @@ function mybot_install()
 	global $lang, $PL, $db;
 	$plugininfo = mybot_info();
 	$lang->load("mybot");
-    if(!file_exists(PLUGINLIBRARY))
-    {
-        flash_message($lang->mybot_pl_missing, "error");
-        admin_redirect("index.php?module=config-plugins");
-    }
-    $PL or require_once PLUGINLIBRARY;
+	if(!file_exists(PLUGINLIBRARY))
+	{
+		flash_message($lang->mybot_pl_missing, "error");
+		admin_redirect("index.php?module=config-plugins");
+	}
+	$PL or require_once PLUGINLIBRARY;
 
-    if($PL->version < 8)
-    {
-        flash_message($lang->mybot_pl_old, "error");
-        admin_redirect("index.php?module=config-plugins");
-    }
+	if($PL->version < 8)
+	{
+		flash_message($lang->mybot_pl_old, "error");
+		admin_redirect("index.php?module=config-plugins");
+	}
 	mybot_uninstall();
 
 	$col = $db->build_create_table_collation();
@@ -79,119 +79,119 @@ function mybot_install()
 	PRIMARY KEY (`id`) ) ENGINE=MyISAM {$col}");
 	
 	$PL->settings("mybot",
-	  	"MyBot",
-	  	"Settings for the \"MyBot\" Plugin",
-	  	array(
-	      	"user" => array(
-	          	"title" => "Bot",
-	          	"description" => "Please insert the UID of the user who should be the bot",
-		        "optionscode" => "text",
-		        "value" => "0",
-	          ),
-	      	"selfreact" => array(
-	          	"title" => "React on himself?",
-	          	"description" => "Should the bot react on his posts when someone is logged in with this user?<br />This doesn't end in a loop!",
-		        "optionscode" => "yesno",
-		        "value" => "no",
-	          ),
-	      	"react" => array(
-	          	"title" => "What should the bot do when a new user registers?",
-		        "optionscode" => "select
+		"MyBot",
+		"Settings for the \"MyBot\" Plugin",
+		array(
+			"user" => array(
+				"title" => "Bot",
+				"description" => "Please insert the UID of the user who should be the bot",
+				"optionscode" => "text",
+				"value" => "0",
+			),
+			"selfreact" => array(
+				"title" => "React on himself?",
+				"description" => "Should the bot react on his posts when someone is logged in with this user?<br />This doesn't end in a loop!",
+				"optionscode" => "yesno",
+				"value" => "no",
+			),
+			"react" => array(
+				"title" => "What should the bot do when a new user registers?",
+				"optionscode" => "select
 none=Nothing
 pm=Send a PM
 post=Create a thread",
-		        "value" => "none",
-	          ),
-	      	"react_pm_subject" => array(
-	          	"title" => "Subject (PM)",
-	          	"description" => "Just needed when the bot sends a PM to a new User<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
-		        "optionscode" => "text",
-		        "value" => "Welcome {registered}",
-	          ),
-	      	"react_pm" => array(
-	          	"title" => "Message (PM)",
-	          	"description" => "Just needed when the bot sends a PM to a new User<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
-		        "optionscode" => "textarea",
-		        "value" => "Hi {registered},
+				"value" => "none",
+			),
+			"react_pm_subject" => array(
+				"title" => "Subject (PM)",
+				"description" => "Just needed when the bot sends a PM to a new User<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+				"optionscode" => "text",
+				"value" => "Welcome {registered}",
+			),
+			"react_pm" => array(
+				"title" => "Message (PM)",
+				"description" => "Just needed when the bot sends a PM to a new User<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+				"optionscode" => "textarea",
+				"value" => "Hi {registered},
 
 welcome on {boardname}
 
 Best regards,
 {botname}",
-	          ),
-	      	"react_post_forum" => array(
-	          	"title" => "Welcome forum",
-	          	"description" => "Which forum should be used by the bot to post in?",
-		        "optionscode" => "text",
-		        "value" => "0",
-	          ),
-	      	"react_post_subject" => array(
-	          	"title" => "Subject (Thread)",
-	          	"description" => "Just needed when the bot posts in a forum when a new User registers<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
-		        "optionscode" => "text",
-		        "value" => "Welcome {registered}",
-	          ),
-	      	"react_post_text" => array(
-	          	"title" => "Message (Thread)",
-	          	"description" => "Just needed when the bot posts in a forum when a new User registers<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
-		        "optionscode" => "textarea",
-		        "value" => "Hi {registered},
+			),
+			"react_post_forum" => array(
+				"title" => "Welcome forum",
+				"description" => "Which forum should be used by the bot to post in?",
+				"optionscode" => "text",
+				"value" => "0",
+			),
+			"react_post_subject" => array(
+				"title" => "Subject (Thread)",
+				"description" => "Just needed when the bot posts in a forum when a new User registers<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+				"optionscode" => "text",
+				"value" => "Welcome {registered}",
+			),
+			"react_post_text" => array(
+				"title" => "Message (Thread)",
+				"description" => "Just needed when the bot posts in a forum when a new User registers<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+				"optionscode" => "textarea",
+				"value" => "Hi {registered},
 
 welcome on {boardname}
 
 Best regards,
 {botname}",
-	          ),
-	      	"bday" => array(
-	          	"title" => "What should the bot do when a user has birthday?",
-		        "optionscode" => "select
+			),
+				"bday" => array(
+				"title" => "What should the bot do when a user has birthday?",
+				"optionscode" => "select
 none=Nothing
 pm=Send a PM
 post=Create a thread",
-		        "value" => "none",
-	          ),
-	      	"bday_pm_subject" => array(
-	          	"title" => "Subject (PM)",
-	          	"description" => "See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
-		        "optionscode" => "text",
-		        "value" => "Happy Birthday {birthday}",
-	          ),
-	      	"bday_pm" => array(
-	          	"title" => "Message (PM)",
-	          	"description" => "See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
-		        "optionscode" => "textarea",
-		        "value" => "Hi {birthday},
+				"value" => "none",
+			),
+			"bday_pm_subject" => array(
+				"title" => "Subject (PM)",
+				"description" => "See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+				"optionscode" => "text",
+				"value" => "Happy Birthday {birthday}",
+			),
+			"bday_pm" => array(
+				"title" => "Message (PM)",
+				"description" => "See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+				"optionscode" => "textarea",
+				"value" => "Hi {birthday},
 
 we wish you a Happy Birthday!
 
 Best regards,
 {botname}",
-	          ),
-	      	"bday_post_forum" => array(
-	          	"title" => "Congratulation forum",
-	          	"description" => "Which forum should be used by the bot to post in?",
-		        "optionscode" => "text",
-		        "value" => "0",
-	          ),
-	      	"bday_post_subject" => array(
-	          	"title" => "Subject (Thread)",
-	          	"description" => "See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
-		        "optionscode" => "text",
-		        "value" => "Happy Birthday {birthday}",
-	          ),
-	      	"bday_post_text" => array(
-	          	"title" => "Message (Thread)",
-	          	"description" => "See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
-		        "optionscode" => "textarea",
-		        "value" => "Hi {birthday},
+			),
+			"bday_post_forum" => array(
+				"title" => "Congratulation forum",
+				"description" => "Which forum should be used by the bot to post in?",
+				"optionscode" => "text",
+				"value" => "0",
+			),
+			"bday_post_subject" => array(
+				"title" => "Subject (Thread)",
+				"description" => "See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+				"optionscode" => "text",
+				"value" => "Happy Birthday {birthday}",
+			),
+			"bday_post_text" => array(
+				"title" => "Message (Thread)",
+				"description" => "See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+				"optionscode" => "textarea",
+				"value" => "Hi {birthday},
 
 we wish you a Happy Birthday!
 
 Best regards,
 {botname}",
-	          ),
+			),
 		)
-    );
+	);
 
 	$PL->cache_update("mybot_version", $plugininfo['version']);
 }
@@ -200,7 +200,7 @@ function mybot_installed()
 {
 	global $install_uninstall, $codename;
 	if($codename=="mybot" && $install_uninstall)
-	    admin_redirect("index.php?module=config-installbot");
+		admin_redirect("index.php?module=config-installbot");
 }
 
 function mybot_is_installed()
@@ -212,9 +212,9 @@ function mybot_is_installed()
 function mybot_uninstall()
 {
 	global $PL, $db;
-    $PL or require_once PLUGINLIBRARY;
+	$PL or require_once PLUGINLIBRARY;
 	$db->drop_table("mybot");
-    $PL->settings_delete("mybot");
+	$PL->settings_delete("mybot");
 	$PL->cache_delete("mybot_version");
 	$PL->cache_delete("mybot_rules");
 }
@@ -286,31 +286,27 @@ function mybot_admin_user_permissions($admin_permissions)
 function mybot_peeker()
 {
 		echo '<script type="text/javascript">
-		Event.observe(window, "load", function() {
-			loadMyBotPeekers();			
-		});
-		function loadMyBotPeekers()
-		{
-			new Peeker($("setting_mybot_react"), $("row_setting_mybot_react_pm_subject"), /pm/, false);
-			new Peeker($("setting_mybot_react"), $("row_setting_mybot_react_pm"), /pm/, false);
-			new Peeker($("setting_mybot_react"), $("row_setting_mybot_react_post_forum"), /post/, false);
-			new Peeker($("setting_mybot_react"), $("row_setting_mybot_react_post_subject"), /post/, false);
-			new Peeker($("setting_mybot_react"), $("row_setting_mybot_react_post_text"), /post/, false);
+		$(document).ready(function() {
+			new Peeker($("#setting_mybot_react"), $("#row_setting_mybot_react_pm_subject"), /pm/, false);
+			new Peeker($("#setting_mybot_react"), $("#row_setting_mybot_react_pm"), /pm/, false);
+			new Peeker($("#setting_mybot_react"), $("#row_setting_mybot_react_post_forum"), /post/, false);
+			new Peeker($("#setting_mybot_react"), $("#row_setting_mybot_react_post_subject"), /post/, false);
+			new Peeker($("#setting_mybot_react"), $("#row_setting_mybot_react_post_text"), /post/, false);
 
-			new Peeker($("setting_mybot_bday"), $("row_setting_mybot_bday_pm_subject"), /pm/, false);
-			new Peeker($("setting_mybot_bday"), $("row_setting_mybot_bday_pm"), /pm/, false);
-			new Peeker($("setting_mybot_bday"), $("row_setting_mybot_bday_post_forum"), /post/, false);
-			new Peeker($("setting_mybot_bday"), $("row_setting_mybot_bday_post_subject"), /post/, false);
-			new Peeker($("setting_mybot_bday"), $("row_setting_mybot_bday_post_text"), /post/, false);
-		}
+			new Peeker($("#setting_mybot_bday"), $("#row_setting_mybot_bday_pm_subject"), /pm/, false);
+			new Peeker($("#setting_mybot_bday"), $("#row_setting_mybot_bday_pm"), /pm/, false);
+			new Peeker($("#setting_mybot_bday"), $("#row_setting_mybot_bday_post_forum"), /post/, false);
+			new Peeker($("#setting_mybot_bday"), $("#row_setting_mybot_bday_post_subject"), /post/, false);
+			new Peeker($("#setting_mybot_bday"), $("#row_setting_mybot_bday_post_text"), /post/, false);
+		});
 	</script>';
 }
 
 function mybot_parser($text, $type="", $additional=array()) {
 	global $mybb, $db;
 
-   	if(!isset($additional['botname']))
-   		$additional['botname'] = $db->fetch_field($db->simple_select("users", "username", "uid='{$mybb->settings['mybot_user']}'"), "username");
+	if(!isset($additional['botname']))
+		$additional['botname'] = $db->fetch_field($db->simple_select("users", "username", "uid='{$mybb->settings['mybot_user']}'"), "username");
 	$text = str_replace('{boardname}', $mybb->settings['bbname'], $text);
 	$text = str_replace('{botname}', $additional['botname'], $text);
 	if($type == "register") {
@@ -343,77 +339,77 @@ function mybot_parser($text, $type="", $additional=array()) {
 					$additional['tid'] = $post['tid'];
 				}
 			}
-			
+
 			$thread = get_thread($additional['tid']);
 			$post = get_post($additional['pid']);
-			
+
 			//Is the first post the same as the last?
 			if(!isset($additional['type'])) {
 				if($thread['firstpost'] == $additional['pid'])
-				    $additional['type'] = "thread";
+				 	$additional['type'] = "thread";
 				else
 					$additional['type'] = "post";
 			}
-			
+
 			//Check all informations and add the missing ones
 			if(!isset($additional['post']['subject']))
-			    $additional['post']['subject'] = $post['subject'];
-			    
+				$additional['post']['subject'] = $post['subject'];
+
 			if(!isset($additional['post']['link'])) {
-		        $link = $mybb->settings['bburl']."/".get_post_link($additional['pid'], $additional['tid'])."#pid{$additional['pid']}";
+				$link = $mybb->settings['bburl']."/".get_post_link($additional['pid'], $additional['tid'])."#pid{$additional['pid']}";
 				$additional['post']['link'] = "[url={$link}]{$additional['post']['subject']}[/url]";
 			}
-			
+
 			if(!isset($additional['post']['message']))
-			    $additional['post']['message'] = $post['message'];
-			    
+				$additional['post']['message'] = $post['message'];
+
 			if(!isset($additional['post']['timestamp']))
-			    $additional['post']['timestamp'] = $post['dateline'];
-			
+				$additional['post']['timestamp'] = $post['dateline'];
+
 			if(!isset($additional['post']['date']))
-			    $additional['post']['date'] = date($mybb->settings['dateformat'], $additional['post']['timestamp']);
-			
+				$additional['post']['date'] = date($mybb->settings['dateformat'], $additional['post']['timestamp']);
+
 			if(!isset($additional['post']['time']))
-			    $additional['post']['time'] = date($mybb->settings['timeformat'], $additional['post']['timestamp']);
-			    
+				$additional['post']['time'] = date($mybb->settings['timeformat'], $additional['post']['timestamp']);
+
 			if(!isset($additional['post']['uid']))
-			    $additional['post']['uid'] = $post['uid'];
-			
+				$additional['post']['uid'] = $post['uid'];
+
 			if(!isset($additional['post']['user']))
-			    $additional['post']['user'] = $post['username'];
-			
+				$additional['post']['user'] = $post['username'];
+
 			if(!isset($additional['post']['userlink'])) {
-			    $link = $mybb->settings['bburl']."/".get_profile_link($additional['post']['uid']);
+				$link = $mybb->settings['bburl']."/".get_profile_link($additional['post']['uid']);
 				$additional['post']['userlink'] = "[url={$link}]{$additional['post']['user']}[/url]";
 			}
 
 			//Do the same for the firstpost
 			if($additional['type'] == $thread)
-			    $additional['thread'] = $additional['post'];
+				$additional['thread'] = $additional['post'];
 			else {
 				$post = get_post($thread['firstpost']);
-	
-			    $additional['thread']['subject'] = $post['subject'];
 
-		        $link = $mybb->settings['bburl']."/".get_post_link($post['pid'], $additional['tid'])."#pid{$post['pid']}";
+				$additional['thread']['subject'] = $post['subject'];
+
+				$link = $mybb->settings['bburl']."/".get_post_link($post['pid'], $additional['tid'])."#pid{$post['pid']}";
 				$additional['thread']['link'] = "[url={$link}]{$additional['thread']['subject']}[/url]";
-	
-			    $additional['thread']['message'] = $post['message'];
-	
-			    $additional['thread']['timestamp'] = $post['dateline'];
-	
-			    $additional['thread']['date'] = date($mybb->settings['dateformat'], $additional['thread']['timestamp']);
 
-			    $additional['thread']['time'] = date($mybb->settings['timeformat'], $additional['thread']['timestamp']);
+				$additional['thread']['message'] = $post['message'];
 
-			    $additional['thread']['uid'] = $post['uid'];
+				$additional['thread']['timestamp'] = $post['dateline'];
 
-			    $additional['thread']['user'] = $post['username'];
+				$additional['thread']['date'] = date($mybb->settings['dateformat'], $additional['thread']['timestamp']);
 
-			    $link = $mybb->settings['bburl']."/".get_profile_link($additional['thread']['uid']);
+				$additional['thread']['time'] = date($mybb->settings['timeformat'], $additional['thread']['timestamp']);
+
+				$additional['thread']['uid'] = $post['uid'];
+
+				$additional['thread']['user'] = $post['username'];
+
+				$link = $mybb->settings['bburl']."/".get_profile_link($additional['thread']['uid']);
 				$additional['thread']['userlink'] = "[url={$link}]{$additional['thread']['user']}[/url]";
 			}
-			
+
 			//Get the forum
 			$forum = get_forum($thread['fid']);
 			$additional['thread']['forum'] = $forum['name'];
@@ -490,25 +486,25 @@ function mybot_register()
 		//Write Post
 		$message = mybot_parser($mybb->settings['mybot_react_post_text'], "register", $additional);
 		$subject = mybot_parser($mybb->settings['mybot_react_post_subject'], "register", $additional);
-        require_once  MYBB_ROOT."inc/datahandlers/post.php";
-        $posthandler = new PostDataHandler("insert");
-        $posthandler->action = "thread";
+		require_once  MYBB_ROOT."inc/datahandlers/post.php";
+		$posthandler = new PostDataHandler("insert");
+		$posthandler->action = "thread";
 
-        // Set the thread data that came from the input to the $thread array.
-        $new_thread = array(
-        	"fid" => $mybb->settings['mybot_react_post_forum'],
-            "subject" => $subject,
-            "prefix" => "",
-            "icon" => "",
-            "uid" => $mybb->settings['mybot_user'],
-            "username" => $additional['botname'],
-            "message" => $message,
-            "ipaddress" => get_ip()
-        );
-        $posthandler->set_data($new_thread);
-        $valid_thread = $posthandler->validate_thread();
+		// Set the thread data that came from the input to the $thread array.
+		$new_thread = array(
+			"fid" => $mybb->settings['mybot_react_post_forum'],
+			"subject" => $subject,
+			"prefix" => "",
+			"icon" => "",
+			"uid" => $mybb->settings['mybot_user'],
+			"username" => $additional['botname'],
+			"message" => $message,
+			"ipaddress" => get_ip()
+		);
+		$posthandler->set_data($new_thread);
+		$valid_thread = $posthandler->validate_thread();
 		if($valid_thread) {
-	        $posthandler->insert_thread();
+			$posthandler->insert_thread();
 		}
 	} else
 		return;
@@ -517,10 +513,10 @@ function mybot_register()
 function mybot_birthday()
 {
 	global $PL, $mybb, $db;
-    $PL or require_once PLUGINLIBRARY;
+	$PL or require_once PLUGINLIBRARY;
 
 	if(!isset($mybb->settings['mybot_bday']) || $mybb->settings['mybot_bday'] == "none") // We use an old version of MyBot
-	    return;
+		return;
 
 	$last_run = $PL->cache_read("mybot_birthday");
 	if($last_run !== false) {
@@ -536,7 +532,7 @@ function mybot_birthday()
 		$diff = array_diff_assoc($last, $now);
 
 		if(count($diff) == 0)
-		    //Nothing to do
+			//Nothing to do
 			return;
 
 		$run = true;
@@ -561,9 +557,9 @@ function mybot_birthday()
 
 	$add = "";
 	if($mybb->settings['mybot_bday'] == "post")
-	    $add = "AND birthdayprivacy = 'all'";
+		$add = "AND birthdayprivacy = 'all'";
 
-    foreach ($todo as $day) {
+	foreach ($todo as $day) {
 		$db_bday = $day['date']."-".$day['month']."-%";
 		$query = $db->simple_select("users", "uid, username", "birthday LIKE '{$db_bday}'{$add}");
 
@@ -611,25 +607,25 @@ function mybot_birthday_write($uid, $username)
 		//Write Post
 		$message = mybot_parser($mybb->settings['mybot_bday_post_text'], "birthday", $additional);
 		$subject = mybot_parser($mybb->settings['mybot_bday_post_subject'], "birthday", $additional);
-        require_once  MYBB_ROOT."inc/datahandlers/post.php";
-        $posthandler = new PostDataHandler("insert");
-        $posthandler->action = "thread";
+		require_once  MYBB_ROOT."inc/datahandlers/post.php";
+		$posthandler = new PostDataHandler("insert");
+		$posthandler->action = "thread";
 
-        // Set the thread data that came from the input to the $thread array.
-        $new_thread = array(
-        	"fid" => $mybb->settings['mybot_bday_post_forum'],
-            "subject" => $subject,
-            "prefix" => "",
-            "icon" => "",
-            "uid" => $mybb->settings['mybot_user'],
-            "username" => $additional['botname'],
-            "message" => $message,
-            "ipaddress" => get_ip()
-        );
-        $posthandler->set_data($new_thread);
-        $valid_thread = $posthandler->validate_thread();
+		// Set the thread data that came from the input to the $thread array.
+		$new_thread = array(
+			"fid" => $mybb->settings['mybot_bday_post_forum'],
+			"subject" => $subject,
+			"prefix" => "",
+			"icon" => "",
+			"uid" => $mybb->settings['mybot_user'],
+			"username" => $additional['botname'],
+			"message" => $message,
+			"ipaddress" => get_ip()
+		);
+		$posthandler->set_data($new_thread);
+		$valid_thread = $posthandler->validate_thread();
 		if($valid_thread) {
-	        $posthandler->insert_thread();
+			$posthandler->insert_thread();
 		}
 	}
 }
@@ -637,18 +633,18 @@ function mybot_birthday_write($uid, $username)
 function mybot_cache_update($load = true, $rules = array())
 {
 	global $PL, $db;
-    $PL or require_once PLUGINLIBRARY;
+	$PL or require_once PLUGINLIBRARY;
 	if($load) {
-	    $query = $db->simple_select("mybot");
+		$query = $db->simple_select("mybot");
 		while($rule = $db->fetch_array($query))
-		    $rules[] = $rule;
+			$rules[] = $rule;
 	}
 
 	for($i=0; $i<sizeof($rules); ++$i) {
 		if(!is_Array($rules[$i]['conditions']))
-		    $rules[$i]['conditions'] = @unserialize($rules[$i]['conditions']);
+			$rules[$i]['conditions'] = @unserialize($rules[$i]['conditions']);
 		if(!is_Array($rules[$i]['actions']))
-		    $rules[$i]['actions'] = @unserialize($rules[$i]['actions']);
+			$rules[$i]['actions'] = @unserialize($rules[$i]['actions']);
 	}
 	return $PL->cache_update("mybot_rules", $rules);
 }
@@ -656,19 +652,19 @@ function mybot_cache_update($load = true, $rules = array())
 function mybot_cache_load($id = false)
 {
 	global $PL;
-    $PL or require_once PLUGINLIBRARY;
+	$PL or require_once PLUGINLIBRARY;
 
 	$content = $PL->cache_read("mybot_rules");
 	if(!is_array($content))
-	    $content = mybot_cache_update();
+		$content = mybot_cache_update();
 	if(!$id)
 		return $content;
 	foreach($content as $rid => $rule) {
 		if($rule['id']==$id)
-		    $rrid[] = $rid;
+			$rrid[] = $rid;
 	}
 	if(sizeOf($rrid)!=1)
-	    return false;
+		return false;
 	return $content[$rrid[0]];
 }
 
@@ -691,88 +687,62 @@ function mybot_thread()
 function mybot_report($post, $botname, $reason)
 {
 	global $mybb, $db, $lang, $cache;
+	require_once MYBB_ROOT."inc/functions_modcp.php";
 	$lang->load("report");
+
+	$report_type  = "post";
+	$report_string = "report_reason_post";
+	$report_title = $lang->$report_string;
+	
 	if(!is_array($post))
-	    $post = get_post($post);
-	$thread = get_thread($post['tid']);
+		$post = get_post($post);
+
+	$id = $post['pid'];
+	$id2 = $post['tid'];
+	$report_type_db = "(type = 'post' OR type = '')";
+
 	$forum = get_forum($post['fid']);
-	if($mybb->settings['reportmethod'] == "email" || $mybb->settings['reportmethod'] == "pms")
+
+	$id3 = $forum['fid'];
+	
+	// Check for an existing report
+	if(!empty($report_type_db))
 	{
-		$query = $db->query("
-			SELECT DISTINCT u.username, u.email, u.receivepms, u.uid
-			FROM ".TABLE_PREFIX."moderators m
-			LEFT JOIN ".TABLE_PREFIX."users u ON (u.uid=m.id)
-			WHERE m.fid IN (".$forum['parentlist'].") AND m.isgroup = '0'
-		");
-		$nummods = $db->num_rows($query);
-		if(!$nummods)
+		$query = $db->simple_select("reportedcontent", "*", "reportstatus != '1' AND id = '{$id}' AND {$report_type_db}");
+		
+		if($db->num_rows($query))
 		{
-			unset($query);
-			$query = $db->query("
-				SELECT u.username, u.email, u.receivepms, u.uid
-				FROM ".TABLE_PREFIX."users u
-				LEFT JOIN ".TABLE_PREFIX."usergroups g ON (((CONCAT(',', u.additionalgroups, ',') LIKE CONCAT('%,', g.gid, ',%')) OR u.usergroup = g.gid))
-				WHERE (g.cancp=1 OR g.issupermod=1)
-			");
-		}
-
-		while($mod = $db->fetch_array($query))
-		{
-			$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
-			$emailmessage = $lang->sprintf($lang->email_reportpost, $botname, $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']), $thread['subject'], $reason);
-	
-			if($mybb->settings['reportmethod'] == "pms" && $mod['receivepms'] != 0 && $mybb->settings['enablepms'] != 0)
+			// Existing report
+			$report = $db->fetch_array($query);
+			$report['reporters'] = my_unserialize($report['reporters']);
+		
+			if($mybb->user['uid'] == $report['uid'] || is_array($report['reporters']) && in_array($mybb->user['uid'], $report['reporters']))
 			{
-				$pm_recipients[] = $mod['uid'];
-			}
-			else
-			{
-				my_mail($mod['email'], $emailsubject, $emailmessage);
+				// Already reported
+				return;
 			}
 		}
+	}
 	
-		if(count($pm_recipients) > 0)
-		{
-			$emailsubject = $lang->sprintf($lang->emailsubject_reportpost, $mybb->settings['bbname']);
-			$emailmessage = $lang->sprintf($lang->email_reportpost, $botname, $mybb->settings['bbname'], $post['subject'], $mybb->settings['bburl'], str_replace('&amp;', '&', get_post_link($post['pid'], $thread['tid'])."#pid".$post['pid']), $thread['subject'], $reason);
-	
-			require_once  MYBB_ROOT."inc/datahandlers/pm.php";
-			$pmhandler = new PMDataHandler();
-	
-			$pm = array(
-				"subject" => $emailsubject,
-				"message" => $emailmessage,
-				"icon" => 0,
-				"fromid" => $mybb->settings['mybot_user'],
-				"toid" => $pm_recipients
-			);
-	
-			$pmhandler->admin_override = true;
-			$pmhandler->set_data($pm);
-
-			// Now let the pm handler do all the hard work.
-			if(!$pmhandler->validate_pm())
-			{
-				// Force it to valid to just get it out of here
-				$pmhandler->is_validated = true;
-				$pmhandler->errors = array();
-			}
-			$pminfo = $pmhandler->insert_pm();
-		}
+	// Is this an existing report or a new offender?
+	if(!empty($report))
+	{
+		// Existing report, add vote
+		$report['reporters'][] = $mybb->user['uid'];
+		update_report($report);
 	}
 	else
 	{
-		$reportedpost = array(
-			"pid" => intval($post['pid']),
-			"tid" => $thread['tid'],
-			"fid" => $thread['fid'],
-			"uid" => $mybb->settings['mybot_user'],
-			"dateline" => TIME_NOW,
-			"reportstatus" => 0,
-			"reason" => $db->escape_string(htmlspecialchars_uni($reason))
+		// Bad user!
+		$new_report = array(
+			'id' => $id,
+			'id2' => $id2,
+			'id3' => $id3,
+			'uid' => $mybb->settings['mybot_user'],
+			'reason' => trim($reason)
 		);
-		$db->insert_query("reportedposts", $reportedpost);
-		$cache->update_reportedposts();
+
+		add_report($new_report);
 	}
 }
 
@@ -785,15 +755,15 @@ function mybot_string_in_message($string, $message, $subject, $reverse)
 	$length = sizeOf($strings);
 	foreach($strings as $key => $string) {
 		if($key+1 != $length)
-		    $string = substr($string, 0, -1);
+			$string = substr($string, 0, -1);
 		if($reverse) {
 			if($string != "" && (strpos(strtolower($message), strtolower($string)) === false && strpos(strtolower($subject), strtolower($string)) === false))
-			    $all = false;			
+				$all = false;
 		} else {
 			if($string != "" && (strpos(strtolower($message), strtolower($string)) !== false || strpos(strtolower($subject), strtolower($string)) !== false)) {
-			    $found = true;
-			    if($additional['foundstring'] == "")
-			        $additional['foundstring'] = $string;
+				$found = true;
+				if($additional['foundstring'] == "")
+					$additional['foundstring'] = $string;
 			}
 		}
 	}
@@ -806,17 +776,17 @@ function mybot_string_in_message($string, $message, $subject, $reverse)
 function mybot_work($info, $type)
 {
 	global $PL, $db, $mybb, $groupscache, $additional;
-	
+
 	//We don't want the bot reacting on himself...
 	if(!isset($mybb->settings['mybot_selfreact']) || ($mybb->settings['mybot_selfreact'] == "no" && $info['uid'] == $mybb->settings['mybot_user']))
-	    return;
-	
+		return;
+
 	//It's difficult to react on a post which isn't visible so we do nothing here
 	if(isset($info['visible']) && $info['visible'] != 1)
-	    return;
-	
-    require_once MYBB_ROOT."inc/datahandlers/post.php";
- 	$posthandler = new PostDataHandler("insert");
+		return;
+
+	require_once MYBB_ROOT."inc/datahandlers/post.php";
+	$posthandler = new PostDataHandler("insert");
 	require_once MYBB_ROOT."inc/class_moderation.php";
 	$moderation = new Moderation;
 	require_once MYBB_ROOT."inc/datahandlers/pm.php";
@@ -835,22 +805,22 @@ function mybot_work($info, $type)
 			if(@in_array(-1, $rule['conditions']['user']) && $thread['uid'] == $info['uid'])
 				$continue = false;
 			if(@in_array($info['uid'], $rule['conditions']['user']))
-			    $continue = false;
-			
+				$continue = false;
+
 			if($continue)
-			    continue;
+				continue;
 		}
 		if(array_key_exists("group", $rule['conditions']) && !$PL->is_member($rule['conditions']['group'], $info['uid'])) {
-		    continue;
+			continue;
 		}
 		if(array_key_exists("forum", $rule['conditions']) && !@in_array($info['fid'], $rule['conditions']['forum'])) {
-		    continue;
+			continue;
 		}
 		if(array_key_exists("string", $rule['conditions']) && !mybot_string_in_message($rule['conditions']['string'], $info['message'], $info['subject'], $rule['conditions']['string_reverse'])) {
 			continue;
 		}
 		if(array_key_exists("postlimit", $rule['conditions']) && $thread['replies'] > $rule['conditions']['postlimit']) {
-		    continue;
+			continue;
 		}
 		if(array_key_exists("prefix", $rule['conditions']) && !@in_array($thread['prefix'], $rule['conditions']['prefix'])) {
 			continue;
@@ -868,31 +838,31 @@ function mybot_work($info, $type)
 	++$date;
 	foreach($rules as $rule) {
 		if(array_key_exists("answer", $rule['actions'])) {
-            $subject = preg_replace('#RE:\s?#i', '', $info['subject']);
-            $subject = "RE: ".$subject;
-            
-	        // Set the post data that came from the input to the $post array.
-	        $post = array(
-	        	"tid" => $info['tid'],
-	            "replyto" => $pid,
-	            "fid" => $info['fid'],
-	            "subject" => $subject,
-	            "icon" => $info['icon'],
-	            "uid" => $mybb->settings['mybot_user'],
-	            "username" => $additional['botname'],
-	            "message" => mybot_parser($rule['actions']['answer'], "thread", $additional),
-	            "ipaddress" => get_ip(),
-	            "dateline" => $date
-	    	);
-	        $posthandler->set_data($post);
-	        $valid_thread = $posthandler->validate_post();
+			$subject = preg_replace('#RE:\s?#i', '', $info['subject']);
+			$subject = "RE: ".$subject;
+
+			// Set the post data that came from the input to the $post array.
+			$post = array(
+				"tid" => $info['tid'],
+				"replyto" => $pid,
+				"fid" => $info['fid'],
+				"subject" => $subject,
+				"icon" => $info['icon'],
+				"uid" => $mybb->settings['mybot_user'],
+				"username" => $additional['botname'],
+				"message" => mybot_parser($rule['actions']['answer'], "thread", $additional),
+				"ipaddress" => get_ip(),
+				"dateline" => $date
+			);
+			$posthandler->set_data($post);
+			$valid_thread = $posthandler->validate_post();
 			if(!$valid_thread)
 			{
-		        echo inline_error($posthandler->get_friendly_errors());
+				echo inline_error($posthandler->get_friendly_errors());
 			}
-	        $ninfo = $posthandler->insert_post();
-	        $pid = $ninfo['pid'];
-	        ++$date;
+			$ninfo = $posthandler->insert_post();
+			$pid = $ninfo['pid'];
+			++$date;
 		}
 
 		if(array_key_exists("move", $rule['actions'])) {
@@ -907,25 +877,25 @@ function mybot_work($info, $type)
 				$moderation->delete_post($info['pid']);
 		}
 
-    	if(array_key_exists("stick", $rule['actions'])) {
+		if(array_key_exists("stick", $rule['actions'])) {
 			if($thread['sticky'] == 1)
 				$moderation->unstick_threads($info['tid']);
 			else
 				$moderation->stick_threads($info['tid']);
 		}
 		
-    	if(array_key_exists("close", $rule['actions'])) {
+		if(array_key_exists("close", $rule['actions'])) {
 			if($thread['closed'] == 1)
 				$moderation->open_threads($info['tid']);
 			else
 				$moderation->close_threads($info['tid']);
 		}
 
-    	if(array_key_exists("report", $rule['actions'])) {
+		if(array_key_exists("report", $rule['actions'])) {
 			mybot_report($pid, $additional['botname'], $rule['actions']['report']);
 		}
 
-    	if(array_key_exists("approve", $rule['actions'])) {
+		if(array_key_exists("approve", $rule['actions'])) {
 			if($rule['actions']['approve'] == "thread" || $thread['firstpost'] == $info['pid']) {
 				if($thread['visible'] != 1)
 					$moderation->approve_threads($info['tid']);
@@ -940,13 +910,13 @@ function mybot_work($info, $type)
 		}
 
 		if(array_key_exists("pm", $rule['actions'])) {
-		    if($rule['actions']['pm']['user'] == "last")
+			if($rule['actions']['pm']['user'] == "last")
 				$rule['actions']['pm']['user'] = $info['uid'];
 			elseif($rule['actions']['pm']['user'] == "start") {
 				$post = get_post($thread['firstpost']);
 				$rule['actions']['pm']['user'] = $post['uid'];
 			}
-		    
+
 			$pm = array(
 				"subject" => mybot_parser($rule['actions']['pm']['subject'], "thread", $additional),
 				"message" => mybot_parser($rule['actions']['pm']['message'], "thread", $additional),
@@ -957,7 +927,7 @@ function mybot_work($info, $type)
 			);
 			$pm['toid'][] = $rule['actions']['pm']['user'];
 			$pmhandler->set_data($pm);
-	
+
 			// Now let the pm handler do all the hard work.
 			if($pmhandler->validate_pm())
 			{

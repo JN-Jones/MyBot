@@ -11,12 +11,12 @@ $userarray = array(-1=>$lang->mybot_create_user); $grouparray = array(-1=>$lang-
 
 $query = $db->simple_select("users", "uid, username");
 while($user = $db->fetch_array($query))
-    $userarray[$user['uid']] = $user['username'];
+	$userarray[$user['uid']] = $user['username'];
 uasort($userarray, "sort_user");
 
 foreach($groupscache as $group) {
-    if($group['gid']!=1)
-	    $grouparray[$group['gid']] = $group['title'];
+	if($group['gid']!=1)
+		$grouparray[$group['gid']] = $group['title'];
 }
 uasort($grouparray, "sort_group");
 
@@ -30,43 +30,43 @@ if($mybb->input['action']=="do_add") {
 		admin_redirect("index.php?module=config-installbot");
 	}
 
-    if(!strlen(trim($mybb->input['user'])))
+	if(!strlen(trim($mybb->input['user'])))
 	{
 		flash_message($lang->mybot_user_not, 'error');
 		admin_redirect("index.php?module=config-installbot");
 	}
 	
 	if((int)$mybb->input['user']!=-1)
-	    $uid = (int)$mybb->input['user'];
+		$uid = (int)$mybb->input['user'];
 	else {
-	    if(!strlen(trim($mybb->input['username'])))
+		if(!strlen(trim($mybb->input['username'])))
 		{
 			flash_message($lang->mybot_username_not, 'error');
 			admin_redirect("index.php?module=config-installbot");
 		}
 		
-	    if(!strlen(trim($mybb->input['pw'])))
+		if(!strlen(trim($mybb->input['pw'])))
 		{
 			flash_message($lang->mybot_pw_not, 'error');
 			admin_redirect("index.php?module=config-installbot");
 		}
 
-	    if(!strlen(trim($mybb->input['email'])))
+		if(!strlen(trim($mybb->input['email'])))
 		{
 			flash_message($lang->mybot_email_not, 'error');
 			admin_redirect("index.php?module=config-installbot");
 		}
 
-        if(!strlen(trim($mybb->input['group'])))
+		if(!strlen(trim($mybb->input['group'])))
 		{
 			flash_message($lang->mybot_group_not, 'error');
 			admin_redirect("index.php?module=config-installbot");
 		}
 
-    	if((int)$mybb->input['group']!=-1)
-		    $gid = (int)$mybb->input['group'];
+		if((int)$mybb->input['group']!=-1)
+			$gid = (int)$mybb->input['group'];
 		else {
-	        if(!strlen(trim($mybb->input['groupname'])))
+			if(!strlen(trim($mybb->input['groupname'])))
 			{
 				flash_message($lang->mybot_groupname_not, 'error');
 				admin_redirect("index.php?module=config-installbot");
@@ -125,9 +125,9 @@ if($mybb->input['action']=="do_add") {
 		$update = array("value"=>$uid);
 		$db->update_query("settings", $update, "name='mybot_user'");
 		if($added_group)
-		    $message = $lang->sprintf($lang->mybot_installed_group, $lang->mybot_installed, $mybb->input['username'], $mybb->input['groupname']);
+			$message = $lang->sprintf($lang->mybot_installed_group, $lang->mybot_installed, $mybb->input['username'], $mybb->input['groupname']);
 		elseif($added_user)
-		    $message = $lang->sprintf($lang->mybot_installed_user, $lang->mybot_installed, $mybb->input['username']);
+			$message = $lang->sprintf($lang->mybot_installed_user, $lang->mybot_installed, $mybb->input['username']);
 		else
 			$message = $lang->mybot_installed;
 		rebuild_settings();
@@ -143,7 +143,7 @@ if($mybb->input['action']=="do_add") {
 	$form_container = new FormContainer($lang->mybot_installing);
 
 	if(!$uid)
-	    $uid = 1;
+		$uid = 1;
 	$add_user = $form->generate_select_box("user", $userarray, $uid, array("id"=>"user"));
 	$form_container->output_row($lang->mybot_user." <em>*</em>", $lang->mybot_user_desc, $add_user);
 
@@ -172,17 +172,13 @@ if($mybb->input['action']=="do_add") {
 
 	echo '<script type="text/javascript" src="./jscripts/peeker.js"></script>
 	<script type="text/javascript">
-		Event.observe(window, "load", function() {
-			loadPeekers();
+		$(document).ready(function() {
+			new Peeker($("#user"), $("#username"), -1, false);
+			new Peeker($("#user"), $("#pw"), -1, false);
+			new Peeker($("#user"), $("#email"), -1, false);
+			new Peeker($("#user"), $("#group"), -1, false);
+			new Peeker($("#groupselect"), $("#groupname"), -1, false);
 		});
-		function loadPeekers()
-		{
-			new Peeker($("user"), $("username"), -1, false);
-			new Peeker($("user"), $("pw"), -1, false);
-			new Peeker($("user"), $("email"), -1, false);
-			new Peeker($("user"), $("group"), -1, false);
-			new Peeker($("groupselect"), $("groupname"), -1, false);
-		}
 	</script>';
 }
 $page->output_footer();
@@ -191,9 +187,9 @@ function sort_user($a, $b)
 {
 	global $lang;
 	if($a == $lang->mybot_create_user)
-	    return -1;
+		return -1;
 	if($b == $lang->mybot_create_user)
-	    return 1;
+		return 1;
 
 	return strcoll($a, $b);
 }
@@ -201,9 +197,9 @@ function sort_group($a, $b)
 {
 	global $lang;
 	if($a == $lang->mybot_create_group)
-	    return -1;
+		return -1;
 	if($b == $lang->mybot_create_group)
-	    return 1;
+		return 1;
 
 	return strcoll($a, $b);
 }
