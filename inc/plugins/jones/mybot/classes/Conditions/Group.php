@@ -4,6 +4,11 @@ class JB_MyBot_Conditions_Group extends JB_MyBot_Conditions_Base
 {
 	protected static $type = "group";
 
+	public function doCheck($thread, $info)
+	{
+		return is_member($this->getData(), $info['uid']);
+	}
+
 	public static function generateAdditionalFields($data)
 	{
 		global $form, $form_container, $lang;

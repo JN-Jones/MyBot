@@ -37,16 +37,16 @@ class JB_MyBot_Rule extends JB_Classes_Base
 		foreach($this->getConditions() as $condition)
 		{
 			if(!$condition->validate())
-			    $this->errors = array_merge($this->errors, $condition->getErrors());
+				$this->errors = array_merge($this->errors, $condition->getErrors());
 		}
 
 		foreach($this->getActions() as $action)
 		{
 			if(!$action->validate())
-			    $this->errors = array_merge($this->errors, $action->getErrors());
+				$this->errors = array_merge($this->errors, $action->getErrors());
 		}
 
-    	if(!empty($this->errors))
+		if(!empty($this->errors))
 			return false;
 
 		return true;
@@ -70,7 +70,7 @@ class JB_MyBot_Rule extends JB_Classes_Base
 			return $content;
 
 		if(!isset($content[$id]))
-		    return false;
+			return false;
 
 		return $content[$id];
 	}
@@ -109,18 +109,21 @@ class JB_MyBot_Rule extends JB_Classes_Base
 		return true;
 	}
 
-	public function setActions($actions)
+	public function setActions($actions, $clear=false)
 	{
 		if(is_string($actions))
-		    $actions = @unserialize($actions);
+			$actions = @unserialize($actions);
 
 		if(is_array($actions))
 		{
+			if($clear === true)
+				$this->actions = array();
+
 			foreach($actions as $type => $data)
 			{
 				$action = JB_MyBot_Actions_Manager::create($type, $data, $rule);
 				if($action !== false)
-				    $this->actions[] = $action;
+					$this->actions[] = $action;
 			}
 		}
 	}
@@ -128,7 +131,7 @@ class JB_MyBot_Rule extends JB_Classes_Base
 	public function getActions($serialize = false)
 	{
 		if($serialize === false)
-		    return $this->actions;
+			return $this->actions;
 
 		$actions = array();
 		foreach($this->actions as $action)
@@ -143,7 +146,7 @@ class JB_MyBot_Rule extends JB_Classes_Base
 		foreach($this->actions as $action)
 		{
 			if($action->getType() == $type)
-			    return $action;
+				return $action;
 		}
 		return false;
 	}
@@ -151,22 +154,25 @@ class JB_MyBot_Rule extends JB_Classes_Base
 	public function hasAction($type)
 	{
 		if($this->getAction($type) === false)
-		    return false;
+			return false;
 		return true;
 	}
 
-	public function setConditions($conditions)
+	public function setConditions($conditions, $clear=false)
 	{
 		if(is_string($conditions))
-		    $conditions = @unserialize($conditions);
+			$conditions = @unserialize($conditions);
 
 		if(is_array($conditions))
 		{
-	    	foreach($conditions as $type => $data)
+			if($clear === true)
+				$this->conditions = array();
+
+			foreach($conditions as $type => $data)
 			{
 				$condition = JB_MyBot_Conditions_Manager::create($type, $data, $this);
 				if($condition !== false)
-				    $this->conditions[] = $condition;
+					$this->conditions[] = $condition;
 			}
 		}
 	}
@@ -174,7 +180,7 @@ class JB_MyBot_Rule extends JB_Classes_Base
 	public function getConditions($serialize = false)
 	{
 		if($serialize === false)
-		    return $this->conditions;
+			return $this->conditions;
 
 		$conditions = array();
 		foreach($this->conditions as $condition)
@@ -189,7 +195,7 @@ class JB_MyBot_Rule extends JB_Classes_Base
 		foreach($this->conditions as $condition)
 		{
 			if($condition->getType() == $type)
-			    return $condition;
+				return $condition;
 		}
 		return false;
 	}
@@ -197,7 +203,7 @@ class JB_MyBot_Rule extends JB_Classes_Base
 	public function hasCondition($type)
 	{
 		if($this->getCondition($type) === false)
-		    return false;
+			return false;
 		return true;
 	}
 

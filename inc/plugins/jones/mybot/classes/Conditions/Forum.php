@@ -4,6 +4,11 @@ class JB_MyBot_Conditions_Forum extends JB_MyBot_Conditions_Base
 {
 	protected static $type = "forum";
 
+	public function doCheck($thread, $info)
+	{
+		return @in_array($info['fid'], $this->getData());
+	}
+
 	public static function generateAdditionalFields($data)
 	{
 		global $form, $mybb, $form_container, $lang;

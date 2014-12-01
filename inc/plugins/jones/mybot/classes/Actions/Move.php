@@ -4,6 +4,14 @@ class JB_MyBot_Actions_Move extends JB_MyBot_Actions_Base
 {
 	protected static $type = "move";
 
+	public function doAction(&$pid, &$thread, &$info, &$date)
+	{
+		global $moderation;
+
+		$info['tid'] = $moderation->move_thread($info['tid'], $this->getData());
+		$thread = get_thread($info['tid']);
+	}
+
 	public static function generateAdditionalFields($data)
 	{
 		global $form, $form_container, $lang;

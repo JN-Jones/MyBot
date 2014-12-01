@@ -4,6 +4,19 @@ class JB_MyBot_Conditions_User extends JB_MyBot_Conditions_Base
 {
 	protected static $type = "user";
 
+	public function doCheck($thread, $info)
+	{
+		// -1 is thread opener
+		if(@in_array(-1, $this->getData()) && $thread['uid'] == $info['uid'])
+			return true;
+
+		// else we need to check the real uid
+		if(@in_array($info['uid'], $this->getData()))
+			return true;
+
+		return false;
+	}
+
 	public static function generateAdditionalFields($data)
 	{
 		global $userarray, $form, $form_container, $lang;

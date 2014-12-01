@@ -13,7 +13,7 @@ class Module_Edit extends JB_Module_Base
 			flash_message($lang->mybot_no_id, 'error');
 			admin_redirect("index.php?module=".MODULE);
 		}
-		$this->rule = mybot_cache_load($id);
+		$this->rule = JB_MyBot_Rule::getFromCache($id);
 		if($this->rule === false)
 		{
 			flash_message($lang->mybot_no_id, 'error');
@@ -27,7 +27,7 @@ class Module_Edit extends JB_Module_Base
 
 		// Build the conditions array
 		if(!isset($mybb->input['conditions']))
-		    $mybb->input['conditions'] = array();
+			$mybb->input['conditions'] = array();
 		if(in_array("user", $mybb->input['conditions']))
 			$conditions['user'] = $mybb->input['user'];
 
@@ -51,7 +51,7 @@ class Module_Edit extends JB_Module_Base
 
 		// And the actions array
 		if(!isset($mybb->input['actions']))
-		    $mybb->input['actions'] = array();
+			$mybb->input['actions'] = array();
 		if(in_array("answer", $mybb->input['actions']))
 			$actions['answer'] = $mybb->input['answer'];
 
@@ -83,10 +83,10 @@ class Module_Edit extends JB_Module_Base
 		}
 
 		$this->rule->title = $mybb->get_input('title');
-		$this->rule->setConditions($conditions);
-		$this->rule->setActions($actions);
+		$this->rule->setConditions($conditions, true);
+		$this->rule->setActions($actions, true);
 
-    	if($this->rule->validate())
+		if($this->rule->validate())
 		{
 			$this->rule->save();
 
@@ -112,7 +112,7 @@ class Module_Edit extends JB_Module_Base
 				$conditions[] = $type;
 		}
 
-    	foreach(JB_MyBot_Actions_Manager::getTypes() as $type)
+		foreach(JB_MyBot_Actions_Manager::getTypes() as $type)
 		{
 			if($rule->hasAction($type))
 				$actions[] = $type;

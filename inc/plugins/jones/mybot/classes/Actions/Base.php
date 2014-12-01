@@ -16,7 +16,7 @@ abstract class JB_MyBot_Actions_Base
 	public function getData($serialize=false)
 	{
 		if($serialize === true)
-		    return @serialize($this->data);
+			return @serialize($this->data);
 		return $this->data;
 	}
 
@@ -43,8 +43,8 @@ abstract class JB_MyBot_Actions_Base
 		if(empty($this->data))
 		{
 			$l = "mybot_add_".static::$type."_not";
-		    $this->errors[] = $lang->$l;
-		    return false;
+			$this->errors[] = $lang->$l;
+			return false;
 		}
 		return true;
 	}
@@ -58,6 +58,8 @@ abstract class JB_MyBot_Actions_Base
 	{
 		return $this->errors;
 	}
+
+	public abstract function doAction(&$pid, &$thread, &$info, &$date);
 
 	public static function generateAdditionalFields($data) {}
 	public static function generatePeekers() {}

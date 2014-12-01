@@ -8,7 +8,7 @@ class Module_Add extends JB_Module_Base
 
 		// Build the conditions array
 		if(!isset($mybb->input['conditions']))
-		    $mybb->input['conditions'] = array();
+			$mybb->input['conditions'] = array();
 		if(in_array("user", $mybb->input['conditions']))
 			$conditions['user'] = $mybb->input['user'];
 
@@ -32,7 +32,7 @@ class Module_Add extends JB_Module_Base
 
 		// And the actions array
 		if(!isset($mybb->input['actions']))
-		    $mybb->input['actions'] = array();
+			$mybb->input['actions'] = array();
 		if(in_array("answer", $mybb->input['actions']))
 			$actions['answer'] = $mybb->input['answer'];
 
@@ -71,13 +71,13 @@ class Module_Add extends JB_Module_Base
 
 		$rule = JB_MyBot_Rule::create($array);
 
-    	if($rule->validate())
+		if($rule->validate())
 		{
-			$rules = mybot_cache_load();
+			$rules = JB_MyBot_Rule::getFromCache();
 
 			$rule->save();
 
-			$rules[] = $rule;
+			$rules[$rule->id] = $rule;
 			mybot_cache_update(false, $rules);
 
 			flash_message($lang->mybot_add_added, 'success');

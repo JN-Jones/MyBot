@@ -4,6 +4,44 @@ class JB_MyBot_Conditions_String extends JB_MyBot_Conditions_Base
 {
 	protected static $type = "string";
 
+	public function doCheck($thread, $info)
+	{
+		global $additional;
+
+		$strings = explode("\n", $this->getData());
+		$found = false;
+		$all = true;
+		$length = count($strings);
+		$reverse = false;
+		if($this->getRule()->hasCondition("string_reverse"))
+			$reverse = $this->getRule()->getCondition("string_reverse")->getData();
+		foreach($strings as $key => $string)
+		{
+			if($key+1 != $length)
+				$string = substr($string, 0, -1);
+			if($reverse)
+			{
+				if($string != "" && (strpos(strtolower($info['message']), strtolower($string)) === false && strpos(strtolower($info['subject']), strtolower($string)) === false))
+					$all = false;
+			}
+			else
+			{
+				if($string != "" && (strpos(strtolower($info['message']), strtolower($string)) !== false || strpos(strtolower($info['subject']), strtolower($string)) !== false))
+				{
+					$found = true;
+					if($additional['foundstring'] == "")
+						$additional['foundstring'] = $string;
+				}
+			}
+		}
+
+		if($reverse)
+			return !$all;
+	
+		return $found;
+
+	}
+
 	public function getName()
 	{
 		global $lang;

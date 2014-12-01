@@ -4,6 +4,21 @@ class JB_MyBot_Actions_Pm extends JB_MyBot_Actions_Base
 {
 	protected static $type = "pm";
 
+	public function doAction(&$pid, &$thread, &$info, &$date)
+	{
+		if($this->user == "last")
+			$this->user = $info['uid'];
+		else if($this->user == "start")
+		{
+			$post = get_post($thread['firstpost']);
+			$this->user = $post['uid'];
+		}
+
+		$subject = JB_MyBot_Helpers::parse($this->subject, "thread", $additional);
+		$message = JB_MyBot_Helpers::parse($this->message, "thread", $additional);
+		JB_MyBot_Helpers::writePM($subject, $message, $this->user);
+	}
+
 	public function validate()
 	{
 		global $lang;
@@ -11,13 +26,13 @@ class JB_MyBot_Actions_Pm extends JB_MyBot_Actions_Base
 			$this->setError($lang->mybot_add_pm_not);
 		if(empty($this->user))
 			$this->setError($lang->mybot_add_pm_user_not);
-   		if(empty($this->subject))
+		if(empty($this->subject))
 			$this->setError($lang->mybot_add_subject_not);
 		if(empty($this->message))
 			$this->setError($lang->mybot_add_message_not);
 
 		if(count($this->getErrors()) > 0)
-		    return false;
+			return false;
 		return true;
 	}
 
@@ -26,11 +41,11 @@ class JB_MyBot_Actions_Pm extends JB_MyBot_Actions_Base
 		global $form, $form_container, $lang, $userarray;
 
 		if(isset($data['pm']['user']))
-		    $data['pm_user'] = $data['pm']['user'];
+			$data['pm_user'] = $data['pm']['user'];
 		if(isset($data['pm']['subject']))
-		    $data['subject'] = $data['pm']['subject'];
+			$data['subject'] = $data['pm']['subject'];
 		if(isset($data['pm']['message']))
-		    $data['message'] = $data['pm']['message'];
+			$data['message'] = $data['pm']['message'];
 
 		$pm_list = array(
 				"last" => $lang->mybot_add_pm_last,

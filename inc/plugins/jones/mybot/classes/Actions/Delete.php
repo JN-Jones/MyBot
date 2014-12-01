@@ -4,6 +4,16 @@ class JB_MyBot_Actions_Delete extends JB_MyBot_Actions_Base
 {
 	protected static $type = "delete";
 
+	public function doAction(&$pid, &$thread, &$info, &$date)
+	{
+		global $moderation;
+
+		if($this->getData() == "thread" || $thread['firstpost'] == $info['pid'])
+			$moderation->delete_thread($info['tid']);
+		else
+			$moderation->delete_post($info['pid']);
+	}
+
 	public static function generateAdditionalFields($data)
 	{
 		global $form, $form_container, $lang;

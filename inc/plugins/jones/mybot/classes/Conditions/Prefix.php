@@ -4,6 +4,11 @@ class JB_MyBot_Conditions_Prefix extends JB_MyBot_Conditions_Base
 {
 	protected static $type = "prefix";
 
+	public function doCheck($thread, $info)
+	{
+		return @in_array($thread['prefix'], $this->getData());
+	}
+
 	public static function generateAdditionalFields($data)
 	{
 		global $form, $mybb, $form_container, $lang;

@@ -4,6 +4,11 @@ class JB_MyBot_Conditions_Postlimit extends JB_MyBot_Conditions_Base
 {
 	protected static $type = "postlimit";
 
+	public function doCheck($thread, $info)
+	{
+		return $thread['replies'] < $this->getData();
+	}
+
 	public function getName()
 	{
 		global $lang;

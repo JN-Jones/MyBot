@@ -7,14 +7,14 @@ class Module_Index extends JB_Module_Base
 		global $lang;
 
 		generate_tabs("overview");
-		$rules = mybot_cache_load();
+		$rules = JB_MyBot_Rule::getFromCache();
 	
 		$table = new Table;
 		$table->construct_header($lang->mybot_title, array("width" => "10%"));
 		$table->construct_header($lang->mybot_conditions, array("width" => "35%"));
 		$table->construct_header($lang->mybot_actions, array("width" => "35%"));
 		$table->construct_header($lang->controls, array("colspan" => 2, "width" => "20%"));
-	
+
 		if(is_array($rules) && count($rules) > 0)
 		{
 			foreach($rules as $rule)
@@ -22,11 +22,11 @@ class Module_Index extends JB_Module_Base
 				$conditions = $actions = array();
 
 				foreach($rule->getConditions() as $condition)
-				    $conditions[] = $condition->getName();
+					$conditions[] = $condition->getName();
 				$conditions = array_filter($conditions);
 
-    			foreach($rule->getActions() as $action)
-				    $actions[] = $action->getName();
+				foreach($rule->getActions() as $action)
+					$actions[] = $action->getName();
 				$actions = array_filter($actions);
 
 				$table->construct_cell($rule->title);
