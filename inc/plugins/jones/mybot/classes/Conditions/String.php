@@ -8,13 +8,12 @@ class JB_MyBot_Conditions_String extends JB_MyBot_Conditions_Base
 	{
 		global $additional;
 
-		$strings = explode("\n", $this->getData());
+		$strings = explode("\n", $this->string);
 		$found = false;
 		$all = true;
 		$length = count($strings);
 		$reverse = false;
-		if($this->getRule()->hasCondition("string_reverse"))
-			$reverse = $this->getRule()->getCondition("string_reverse")->getData();
+		$reverse = $this->reverse;
 		foreach($strings as $key => $string)
 		{
 			if($key+1 != $length)
@@ -46,7 +45,7 @@ class JB_MyBot_Conditions_String extends JB_MyBot_Conditions_Base
 	{
 		global $lang;
 
-		if($this->getRule()->getCondition("string_reverse") !== false && $this->getRule()->getCondition("string_reverse")->getData())
+		if($this->reverse !== false)
 			return $lang->mybot_conditions_string_reverse;
 		return $lang->mybot_conditions_string;
 	}
@@ -58,7 +57,7 @@ class JB_MyBot_Conditions_String extends JB_MyBot_Conditions_Base
 		$add_string = $form->generate_text_area("string", $data['string']);
 		$form_container->output_row($lang->mybot_add_string, $lang->mybot_add_string_desc, $add_string, '', array(), array('id' => 'string'));
 
-		$add_string_reverse = $form->generate_yes_no_radio("string_reverse", $data['string_reverse']);
+		$add_string_reverse = $form->generate_yes_no_radio("string[reverse]", $data['string']['reverse']);
 		$form_container->output_row($lang->mybot_add_string_reverse, $lang->mybot_add_string_reverse_desc, $add_string_reverse, '', array(), array('id' => 'string_reverse'));
 	}
 

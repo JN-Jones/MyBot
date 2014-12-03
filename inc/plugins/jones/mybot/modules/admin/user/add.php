@@ -20,8 +20,8 @@ class Module_Add extends JB_Module_Base
 
 		if(in_array("string", $mybb->input['conditions']))
 		{
-			$conditions['string'] = $mybb->input['string'];
-			$conditions['string_reverse'] = $mybb->input['string_reverse'];
+			$conditions['string']['string'] = $mybb->input['string'];
+			$conditions['string']['reverse'] = $mybb->input['string']['reverse'];
 		}
 
 		if(in_array("postlimit", $mybb->input['conditions']))
