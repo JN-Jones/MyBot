@@ -16,6 +16,7 @@ class JB_MyBot_Actions_Manager
 			"answer",
 			"move",
 			"delete",
+			"softdelete",
 			"stick",
 			"close",
 			"report",

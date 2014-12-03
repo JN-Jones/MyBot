@@ -42,6 +42,9 @@ class Module_Add extends JB_Module_Base
 		if(in_array("delete", $mybb->input['actions']))
 			$actions['delete'] = $mybb->input['delete'];
 
+		if(in_array("softdelete", $mybb->input['actions']))
+			$actions['softdelete'] = $mybb->input['softdelete'];
+
 		if(in_array("stick", $mybb->input['actions']))
 			$actions['stick'] = true;
 
