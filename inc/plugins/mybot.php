@@ -70,7 +70,11 @@ function mybot_is_installed()
 
 function mybot_uninstall()
 {
+	global $cache;
+
 	JB_Core::i()->uninstall("mybot");
+
+	$cache->delete("mybot", true);
 }
 
 

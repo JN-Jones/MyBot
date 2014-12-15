@@ -18,9 +18,9 @@ class JB_MyBot_Actions_Softdelete extends JB_MyBot_Actions_Base
 		else
 		{
 			if($info['visible'] != -1)
-				$moderation->soft_delete_posts($info['pid']);
+				$moderation->soft_delete_posts(array($info['pid']));
 			else
-				$moderation->restore_posts($info['pid']);
+				$moderation->restore_posts(array($info['pid']));
 		}
 	}
 
@@ -28,9 +28,9 @@ class JB_MyBot_Actions_Softdelete extends JB_MyBot_Actions_Base
 	{
 		global $form, $form_container, $lang;
 
-		$add_delete  = $form->generate_radio_button("softdelete", "thread", $lang->thread, array("checked"=>true));
-		$add_delete .= " ".$form->generate_radio_button("softdelete", "post", $lang->post);
-		$form_container->output_row($lang->mybot_add_softdelete, $lang->mybot_add_softdelete_desc, $add_delete, '', array(), array('id' => 'softdelete'));
+		$add_softdelete  = $form->generate_radio_button("softdelete", "thread", $lang->thread, array("checked"=>true));
+		$add_softdelete .= " ".$form->generate_radio_button("softdelete", "post", $lang->post);
+		$form_container->output_row($lang->mybot_add_softdelete, $lang->mybot_add_softdelete_desc, $add_softdelete, '', array(), array('id' => 'softdelete'));
 	}
 
 	public static function generatePeekers()

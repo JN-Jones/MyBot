@@ -20,7 +20,7 @@ class Module_Add extends JB_Module_Base
 
 		if(in_array("string", $mybb->input['conditions']))
 		{
-			$conditions['string']['string'] = $mybb->input['string'];
+			$conditions['string']['string'] = $mybb->input['string']['string'];
 			$conditions['string']['reverse'] = $mybb->input['string']['reverse'];
 		}
 

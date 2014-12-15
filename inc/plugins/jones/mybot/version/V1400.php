@@ -22,9 +22,7 @@ class JB_MyBot_Version_V1400 extends JB_Version_Base
 		{
 			$PL or require_once MYBB_ROOT."inc/plugins/pluginlibrary.php";
 			$PL->cache_delete("mybot_version"); // Can be deleted without any problems, not used anyways
-//			$rules = $PL->cache_read("mybot_rules");
 			$bday = $PL->cache_read("mybot_birthday");
-//			$cache->update("mybot_rules", $rules);
 			$cache->update("mybot_birthday", $bday);
 			$PL->cache_delete("mybot_rules");
 			$PL->cache_delete("mybot_birthday");

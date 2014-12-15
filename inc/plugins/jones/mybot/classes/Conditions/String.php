@@ -45,7 +45,7 @@ class JB_MyBot_Conditions_String extends JB_MyBot_Conditions_Base
 	{
 		global $lang;
 
-		if($this->reverse !== false)
+		if($this->reverse != false)
 			return $lang->mybot_conditions_string_reverse;
 		return $lang->mybot_conditions_string;
 	}
@@ -54,7 +54,7 @@ class JB_MyBot_Conditions_String extends JB_MyBot_Conditions_Base
 	{
 		global $form, $mybb, $form_container, $lang;
 
-		$add_string = $form->generate_text_area("string", $data['string']);
+		$add_string = $form->generate_text_area("string[string]", $data['string']['string']);
 		$form_container->output_row($lang->mybot_add_string, $lang->mybot_add_string_desc, $add_string, '', array(), array('id' => 'string'));
 
 		$add_string_reverse = $form->generate_yes_no_radio("string[reverse]", $data['string']['reverse']);

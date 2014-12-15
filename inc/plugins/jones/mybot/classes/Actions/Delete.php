@@ -25,6 +25,7 @@ class JB_MyBot_Actions_Delete extends JB_MyBot_Actions_Base
 
 	public static function generatePeekers()
 	{
-		return 'new Peeker($("#action"), $("#delete"), /delete/);';
+		// Make sure the regex doesn't react on "softdelete"
+		return 'new Peeker($("#action"), $("#delete"), /^delete/);';
 	}
 }
