@@ -1,6 +1,6 @@
 <?php
 
-class JB_MyBot_Version_V1400 extends JB_Version_Base
+class JB_MyBot_Version_V14 extends JB_Version_Base
 {
 	static function execute()
 	{
@@ -40,6 +40,7 @@ class JB_MyBot_Version_V1400 extends JB_Version_Base
 			unset($conds['string_reverse']);
 			$conds['string'] = array("string" => $string, "reverse" => $reverse);
 			$db->update_query("mybot", array("conditions" => dbe(@serialize($conds))), "id={$rule['id']}");
+		}
+		mybot_cache_update();
 	}
-	mybot_cache_update();
 }
