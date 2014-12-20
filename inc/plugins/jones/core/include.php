@@ -1,7 +1,7 @@
 <?php
 
 // Whether or not to use the development version
-define("USE_DEVELOPMENT", true);
+define("USE_DEVELOPMENT", false);
 
 // This file is only supposed to do some general checks (eg Core installed)
 if(!file_exists(MYBB_ROOT."inc/plugins/jones/core/Core.php"))
