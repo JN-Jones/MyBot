@@ -59,11 +59,17 @@ class JB_MyBot_Rule extends JB_Classes_StorableObject
 	
 		$content = $cache->read("mybot_rules");
 		if(!is_array($content))
-			$content = mybot_cache_update();
-
-		foreach($content as &$rule)
 		{
-			$rule = static::create($rule);
+			mybot_cache_update();
+			$content = $cache->read("mybot_rules");
+		}
+
+		if(is_array($content))
+		{
+			foreach($content as &$rule)
+			{
+				$rule = static::create($rule);
+			}
 		}
 
 		if($id === false)
