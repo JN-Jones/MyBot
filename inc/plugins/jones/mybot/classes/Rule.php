@@ -1,6 +1,6 @@
 <?php
 
-class JB_MyBot_Rule extends JB_Classes_Base
+class JB_MyBot_Rule extends JB_Classes_StorableObject
 {
 	static protected $table = "mybot";
 	static protected $cache = array();
