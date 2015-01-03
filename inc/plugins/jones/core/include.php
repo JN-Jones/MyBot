@@ -17,10 +17,17 @@ else
 if(JB_CORE_INSTALLED === false && $plugins != null)
 	$plugins->add_hook("admin_config_plugins_plugin_list", "jonescore_notice");
 
-function jb_install_plugin($codename, $core_minimum = false, $mybb_minimum = false, $php_minimum = "5.3")
+function jb_install_plugin($codename, $register = array(), $core_minimum = false, $mybb_minimum = false, $php_minimum = "5.3")
 {
 	if(JB_CORE_INSTALLED === false)
 		$installed = jb_install_core();
+
+	// In case we installed the core and this plugin needs to register itself we need to do this here. Otherwise the installer can't find its files
+	if($installed === true && isset($register['vendor']) && isset($register['prefix']))
+	{
+		JB_Core::i(); // Needed to register the autoloader
+		JB_Packages::i()->register($register['prefix'], $register['vendor'], $codename);
+	}
 
 	// Don't use an else as the function above might change the value
 	if(JB_CORE_INSTALLED === true || $installed === true)
