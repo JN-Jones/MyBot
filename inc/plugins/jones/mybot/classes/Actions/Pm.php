@@ -6,6 +6,8 @@ class JB_MyBot_Actions_Pm extends JB_MyBot_Actions_Base
 
 	public function doAction(&$pid, &$thread, &$info, &$date)
 	{
+		global $additional;
+
 		if($this->user == "last")
 			$this->user = $info['uid'];
 		else if($this->user == "start")
