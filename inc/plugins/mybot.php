@@ -39,7 +39,7 @@ function mybot_info()
 		"website"		=> "http://jonesboard.de",
 		"author"		=> "Jones",
 		"authorsite"	=> "http://jonesboard.de",
-		"version"		=> "1.4",
+		"version"		=> "1.4.1",
 		"codename"		=> "mybot",
 		"compatibility"	=> "18*"
 	);
@@ -52,7 +52,7 @@ function mybot_info()
 
 function mybot_install()
 {
-	jb_install_plugin("mybot");
+	jb_install_plugin("mybot", array(), false, 1804);
 }
 
 function mybot_installed()
@@ -154,15 +154,15 @@ function mybot_birthday()
 		while($run)
 		{
 			$time = $time + 24*3600;
-			$this['date'] = date("j", $time);
-			$this['month'] = date("n", $time);
-			$this['year'] = date("Y", $time);
+			$running['date'] = date("j", $time);
+			$running['month'] = date("n", $time);
+			$running['year'] = date("Y", $time);
 
-			if(count(array_diff_assoc($this, $now)) == 0)
+			if(count(array_diff_assoc($running, $now)) == 0)
 				//we are ready
 				$run = false;
 
-			$todo[] = $this;
+			$todo[] = $running;
 		}
 	} else
 	{
@@ -203,7 +203,7 @@ function mybot_birthday_write($uid, $username)
 		$message = JB_MyBot_Helpers::parse($mybb->settings['mybot_bday_post_text'], "birthday", $additional);
 		$subject = JB_MyBot_Helpers::parse($mybb->settings['mybot_bday_post_subject'], "birthday", $additional);
 	}
-	JB_MyBot_Helpers::write($subject, $message, $mybb->settings['mybot_bday'], $uid, $additional['botname']);
+	JB_MyBot_Helpers::write($subject, $message, $mybb->settings['mybot_bday'], $uid, $additional['botname'], $mybb->settings['mybot_bday_post_forum']);
 }
 
 function mybot_post()

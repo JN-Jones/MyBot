@@ -182,12 +182,12 @@ class JB_MyBot_Helpers
 		return $text;
 	}
 
-	public static function write($subject, $message, $type, $uid=0, $botname="")
+	public static function write($subject, $message, $type, $uid=0, $botname="", $fid=0)
 	{
 		if($type == "pm")
 			static::writePM($subject, $message, $uid);
 		else if($type == "post")
-			static::writeThread($subject, $message, $botname);
+			static::writeThread($subject, $message, $botname, $fid);
 	}
 
 	public static function writePM($subject, $message, $uid)
@@ -221,9 +221,15 @@ class JB_MyBot_Helpers
 		}
 	}
 
-	public static function writeThread($subject, $message)
+	public static function writeThread($subject, $message, $botname, $fid=0)
 	{
 		global $mybb;
+
+		if($fid === 0)
+		{
+			$fid = $mybb->settings['mybot_react_post_forum'];
+		}
+
 		// Write Post
 		require_once  MYBB_ROOT."inc/datahandlers/post.php";
 		$posthandler = new PostDataHandler("insert");
@@ -231,7 +237,7 @@ class JB_MyBot_Helpers
 
 		// Set the thread data that came from the input to the $thread array.
 		$new_thread = array(
-			"fid"		=> $mybb->settings['mybot_react_post_forum'],
+			"fid"		=> $fid,
 			"subject"	=> $subject,
 			"prefix"	=> "",
 			"icon"		=> "",
