@@ -142,3 +142,40 @@ we wish you a Happy Birthday!
 Best regards,
 {botname}"
 );
+
+$settings[] = array(
+	"name"			=> "mybot_remember",
+	"title"			=> "Should the bot remember users which haven't visited the forum for some time?",
+	"description"	=> "",
+	"optionscode"	=> "yesno",
+	"value"			=> "no"
+);
+
+$settings[] = array(
+	"name"			=> "mybot_remember_time",
+	"title"			=> "After how many days should the bot send the email?",
+	"description"	=> "",
+	"optionscode"	=> "numeric",
+	"value"			=> "30"
+);
+
+$settings[] = array(
+	"name"			=> "mybot_remember_subject",
+	"title"			=> "Subject",
+	"description"	=> "See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+	"optionscode"	=> "text",
+	"value"			=> "We miss you at {boardname}"
+);
+
+$settings[] = array(
+	"name"			=> "mybot_remember_message",
+	"title"			=> "Message",
+	"description"	=> "See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information",
+	"optionscode"	=> "textarea",
+	"value"			=> "Hi {remember},
+
+you haven't visited {boardname} for some time and we really would like to see you again.
+
+Best regards,
+{botname}"
+);

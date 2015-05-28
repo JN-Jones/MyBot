@@ -13,6 +13,7 @@ $plugins->add_hook("member_do_register_end", "mybot_register");
 $plugins->add_hook("newthread_do_newthread_end", "mybot_thread");
 $plugins->add_hook("newreply_do_newreply_end", "mybot_post");
 $plugins->add_hook("global_end", "mybot_birthday");
+$plugins->add_hook("global_end", "mybot_remember");
 
 global $mybb;
 if($mybb->input['module'] == "config-settings" && $mybb->input['action'] == "change")
@@ -39,7 +40,7 @@ function mybot_info()
 		"website"		=> "http://jonesboard.de",
 		"author"		=> "Jones",
 		"authorsite"	=> "http://jonesboard.de",
-		"version"		=> "1.4.1",
+		"version"		=> "1.5",
 		"codename"		=> "mybot",
 		"compatibility"	=> "18*"
 	);
@@ -123,6 +124,61 @@ function mybot_register()
 	JB_MyBot_Helpers::write($subject, $message, $mybb->settings['mybot_react'], $user_info['uid'], $additional['botname']);
 }
 
+function mybot_remember()
+{
+	global $cache, $mybb, $db;
+
+	$last_run = $cache->read("mybot_remember");
+	if ($last_run !== false)
+	{
+		$last['date'] = date("j", $last_run['timestamp']);
+		$last['month'] = date("n", $last_run['timestamp']);
+		$last['year'] = date("Y", $last_run['timestamp']);
+
+		$now['date'] = date("j");
+		$now['month'] = date("n");
+		$now['year'] = date("Y");
+
+		//Is it time?
+		$diff = array_diff_assoc($last, $now);
+
+		if (count($diff) == 0)
+			//Nothing to do
+			return;
+	}
+
+	// Either we haven't run at all or at least not today
+	$timestamp = TIME_NOW - $mybb->settings['mybot_remember_time'] * 24 * 3600;
+
+	$query = $db->simple_select('users', 'uid, username, email, lastvisit, away, returndate', "lastvisit<{$timestamp}");
+	while($user = $db->fetch_array($query))
+	{
+		// We already sent an email to this user
+		if(isset($last_run[$user['uid']]) && $last_run[$user['uid']] == $user['lastvisit'])
+			continue;
+
+		// We don't want to spam users who are set away
+		if($user['away'])
+		{
+			// Either no returndate is set or it's in our "ignore" period
+			if(empty($user['returndate']) || strtotime($user['returndate']) > $timestamp)
+				continue;
+		}
+
+		$additional['remember'] = $user['username'];
+		$additional['rid'] = $user['uid'];
+		$subject = JB_MyBot_Helpers::parse($mybb->settings['mybot_remember_subject'], "remember", $additional);
+		$message = JB_MyBot_Helpers::parse($mybb->settings['mybot_remember_message'], "remember", $additional);
+		my_mail($user['email'], $subject, $message);
+
+		$last_run[$user['uid']] = $user['lastvisit'];
+	}
+
+	$last_run['timestamp'] = TIME_NOW;
+
+	$cache->update("mybot_remember", $last_run);
+}
+
 function mybot_birthday()
 {
 	global $cache, $mybb, $db;
@@ -164,7 +220,8 @@ function mybot_birthday()
 
 			$todo[] = $running;
 		}
-	} else
+	}
+	else
 	{
 		//Just run the bdays from today
 		$todo[] = array("date" => date("j"), "month" => date("n"), "year" => date("Y"));

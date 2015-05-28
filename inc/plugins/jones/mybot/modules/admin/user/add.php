@@ -66,6 +66,9 @@ class Module_Add extends JB_Module_Base
 			$actions['pm']['message'] = $mybb->input['message'];
 		}
 
+		if(in_array("ban", $mybb->input['actions']))
+			$actions['ban'] = $mybb->input['ban'];
+
 		$array = array(
 			'title'			=> $mybb->get_input('title'),
 			'conditions'	=> $conditions,

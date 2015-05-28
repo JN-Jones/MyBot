@@ -21,7 +21,8 @@ class JB_MyBot_Actions_Manager
 			"close",
 			"report",
 			"approve",
-			"pm"
+			"pm",
+			"ban"
 		);
 	}
 

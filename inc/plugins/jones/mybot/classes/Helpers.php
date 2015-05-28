@@ -17,6 +17,10 @@ class JB_MyBot_Helpers
 				new Peeker($("#setting_mybot_bday"), $("#row_setting_mybot_bday_post_forum"), /post/, false);
 				new Peeker($("#setting_mybot_bday"), $("#row_setting_mybot_bday_post_subject"), /post/, false);
 				new Peeker($("#setting_mybot_bday"), $("#row_setting_mybot_bday_post_text"), /post/, false);
+
+				new Peeker($(".setting_mybot_remember"), $("#row_setting_mybot_remember_time"), 1, true);
+				new Peeker($(".setting_mybot_remember"), $("#row_setting_mybot_remember_subject"), 1, true);
+				new Peeker($(".setting_mybot_remember"), $("#row_setting_mybot_remember_message"), 1, true);
 			});
 		</script>';
 	}
@@ -43,8 +47,15 @@ class JB_MyBot_Helpers
 				$text = str_replace('{birthday}', $additional['birthday'], $text);
 			if(isset($additional['bid']))
 				$text = str_replace('{bid}', $additional['bid'], $text);
-
 		}
+		if($type == "remember")
+		{
+			if(isset($additional['remember']))
+				$text = str_replace('{remember}', $additional['remember'], $text);
+			if(isset($additional['rid']))
+				$text = str_replace('{rid}', $additional['rid'], $text);
+		}
+
 		if($type == "thread")
 		{
 			//We can only replace something if we had a pid

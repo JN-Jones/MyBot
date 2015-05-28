@@ -48,8 +48,22 @@ class Module_Documentation extends JB_Module_Base
 		$table->construct_row();
 	
 		$table->output($lang->mybot_birthday);
-	
-	
+
+
+		$table = new Table;
+		$table->construct_header($lang->mybot_variable, array("width"=>"15%"));
+		$table->construct_header($lang->mybot_description);
+
+		$table->construct_cell("{remember}");
+		$table->construct_cell($lang->mybot_doc_remember);
+		$table->construct_row();
+		$table->construct_cell("{rid}");
+		$table->construct_cell($lang->mybot_doc_rid);
+		$table->construct_row();
+
+		$table->output($lang->mybot_remember);
+
+
 		$table = new Table;
 		$table->construct_header($lang->mybot_variable, array("width"=>"15%"));
 		$table->construct_header($lang->mybot_description);

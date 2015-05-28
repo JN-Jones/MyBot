@@ -85,6 +85,9 @@ class Module_Edit extends JB_Module_Base
 			$actions['pm']['message'] = $mybb->input['message'];
 		}
 
+		if(in_array("ban", $mybb->input['actions']))
+			$actions['ban'] = $mybb->input['ban'];
+
 		$this->rule->title = $mybb->get_input('title');
 		$this->rule->setConditions($conditions, true);
 		$this->rule->setActions($actions, true);

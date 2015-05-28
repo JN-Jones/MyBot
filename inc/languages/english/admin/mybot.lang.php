@@ -35,6 +35,7 @@ $l['mybot_actions_close'] = "Open/Close";
 $l['mybot_actions_report'] = "Report";
 $l['mybot_actions_approve'] = "(Un)approve";
 $l['mybot_actions_pm'] = "Write PM";
+$l['mybot_actions_ban'] = "Ban User";
 
 /* Cache Update */
 $l['mybot_cache_reloaded'] = "Reloaded Cache";
@@ -51,6 +52,9 @@ $l['mybot_doc_regid'] = "The ID of the new registered";
 $l['mybot_birthday'] = "Variables for birthday";
 $l['mybot_doc_birthday'] = "The name of the user who has birthday";
 $l['mybot_doc_bid'] = "The ID of the user who has birthday";
+$l['mybot_remember'] = 'Variables for remember';
+$l['mybot_doc_remember'] = 'The name of the user to remember';
+$l['mybot_doc_rid'] = 'The ID of the user to remember';
 $l['mybot_thread'] = "Variables for threads";
 $l['mybot_doc_user'] = "The name of the poster";
 $l['mybot_doc_userlink'] = "The name of the poster with MyCode Link to his profile";
@@ -107,6 +111,7 @@ $l['mybot_add_action_close'] = "Open/Close thread";
 $l['mybot_add_action_report'] = "Report post";
 $l['mybot_add_action_approve'] = "(Un)approve thread";
 $l['mybot_add_action_pm'] = "Send PM";
+$l['mybot_add_action_ban'] = 'Ban user';
 $l['mybot_add_action_not'] = "Please select at least one action";
 $l['thread_creator'] = "Thread Opener";
 $l['mybot_add_user'] = "User";
@@ -160,6 +165,9 @@ $l['mybot_add_pm_other'] = "Other User";
 $l['mybot_add_pm_user'] = "User";
 $l['mybot_add_pm_user_desc'] = "To which user should the message be sent?";
 $l['mybot_add_pm_user_not'] = "Please select a user";
+$l['mybot_add_ban'] = 'Ban a User';
+$l['mybot_add_ban_desc'] = 'Which user should be banned?';
+$l['mybot_add_ban_not'] = 'Internal Error [4]';
 $l['mybot_add_subject'] = "Subject";
 $l['mybot_add_subject_desc'] = "Which subject should the message have?<br />See the <a href=\"index.php?module=user-mybot&amp;action=documentation\">documentation</a> for more information";
 $l['mybot_add_subject_not'] = "Please enter a subject";
@@ -198,7 +206,3 @@ $l['mybot_save'] = "Save";
 $l['mybot_installed_group'] = "{1}<br />user \"{2}\" and group \"{3}\" added<br />Please edit this again";
 $l['mybot_installed_user'] = "{1}<br />user \"{2}\" added<br />Please edit this again";
 $l['mybot_installed'] = "MyBot has been successfully installed.";
-
-$l['mybot_pl_missing'] = "The plugin depends on <a href='http://mods.mybb.com/view/pluginlibrary'>PluginLibrary</a>, which is missing. Please install it";
-$l['mybot_pl_old'] = "The plugin depends on <a href='http://mods.mybb.com/view/pluginlibrary'>PluginLibrary</a>, which is too old. Please install a newer version (Version 8 or higher required)";
-?>

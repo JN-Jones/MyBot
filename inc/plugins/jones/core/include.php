@@ -1,11 +1,18 @@
 <?php
 
+if(version_compare(PHP_VERSION, "5.3.0", "<"))
+{
+	die("At least PHP 5.3.0 is required. Please contact your host");
+}
+
 // Whether or not to use the development version
-define("USE_DEVELOPMENT", false);
+define("USE_DEVELOPMENT", true);
 
 // This file is only supposed to do some general checks (eg Core installed)
 if(!file_exists(MYBB_ROOT."inc/plugins/jones/core/Core.php"))
+{
 	define("JB_CORE_INSTALLED", false);
+}
 else
 {
 	define("JB_CORE_INSTALLED", true);
@@ -15,10 +22,20 @@ else
 }
 
 if(JB_CORE_INSTALLED === false && $plugins != null)
+{
 	$plugins->add_hook("admin_config_plugins_plugin_list", "jonescore_notice");
+}
 
+/**
+ * @param string $codename
+ * @param array  $register
+ * @param int    $core_minimum
+ * @param int    $mybb_minimum
+ * @param string $php_minimum
+ */
 function jb_install_plugin($codename, $register = array(), $core_minimum = false, $mybb_minimum = false, $php_minimum = "5.3")
 {
+	$installed = false;
 	if(JB_CORE_INSTALLED === false)
 		$installed = jb_install_core();
 
@@ -40,7 +57,11 @@ function jb_install_plugin($codename, $register = array(), $core_minimum = false
 	}
 }
 
-// Called on installation when the core isn't set up
+/**
+ * Called on installation when the core isn't set up
+ *
+ * @return bool
+ */
 function jb_install_core()
 {
 	// We don't want to have any problems guys
@@ -93,6 +114,9 @@ function jb_update_core()
 	}
 }
 
+/**
+ * @return bool
+ */
 function jb_download_core()
 {
 	// No need to try anything if we can't unzip the file at the end
@@ -137,6 +161,9 @@ function jb_download_core()
 	return true;
 }
 
+/**
+ * @param string $direction
+ */
 function jb_move_recursive($direction)
 {
 	global $mybb;
@@ -181,6 +208,9 @@ function jb_move_recursive($direction)
 	closedir($dir);
 }
 
+/**
+ * @param string $direction
+ */
 function jb_remove_recursive($direction)
 {
 	if(substr($direction, -1, 1) != "/")
